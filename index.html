@@ -1,0 +1,3122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jornal Escolar - EEF Vereador Alfredo Scottini</title>
+
+  <style>
+    :root {
+      --azul-principal: #1f2ed8;
+      --azul-escuro: #0c1633;
+      --azul-claro: #4b6bff;
+      --amarelo: #f2e81a;
+      --amarelo-suave: #fff9c4;
+      --branco: #ffffff;
+      --preto: #101828;
+      --cinza-fundo: #f4f7fb;
+      --cinza-card: rgba(255, 255, 255, 0.98);
+      --cinza-borda: #d9e1ec;
+      --cinza-texto: #667085;
+      --cinza-texto-escuro: #334155;
+      --vermelho: #c62828;
+      --verde: #15803d;
+      --laranja: #b45309;
+      --roxo: #6d28d9;
+      --sombra: 0 18px 45px rgba(15, 23, 42, 0.10);
+      --sombra-forte: 0 24px 55px rgba(15, 23, 42, 0.14);
+      --radius: 22px;
+      --topo-altura: 88px;
+      --transicao: 0.25s ease;
+      --max-largura: 1320px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--preto);
+      background:
+        radial-gradient(circle at top left, rgba(31, 46, 216, 0.12), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(242, 232, 26, 0.14), transparent 24%),
+        linear-gradient(180deg, #f8fbff 0%, #f4f7fb 100%);
+    }
+
+    .hidden { display: none !important; }
+    .fade-in { animation: fadeIn 0.35s ease; }
+    .slide-up { animation: slideUp 0.4s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: var(--max-largura);
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      background: linear-gradient(135deg, rgba(12, 22, 51, 0.98), rgba(31, 46, 216, 0.98));
+      border-bottom: 4px solid var(--amarelo);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar {
+      min-height: var(--topo-altura);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+    }
+
+    .brand-topo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo-escola {
+      width: 78px;
+      height: 78px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.18));
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      color: var(--branco);
+      font-size: 30px;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-text p {
+      margin: 6px 0 0;
+      color: #dbeafe;
+      font-size: 14px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      background: rgba(255,255,255,0.10);
+      color: var(--branco);
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .menu-mobile-btn,
+    .btn-atalho-lateral {
+      display: none;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 11px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .nav {
+      background: rgba(255,255,255,0.97);
+      border-bottom: 1px solid rgba(217, 225, 236, 0.9);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: var(--topo-altura);
+      z-index: 110;
+    }
+
+    .nav-inner {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+    }
+
+    .nav-left {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      border: none;
+      background: transparent;
+      color: var(--azul-escuro);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: var(--transicao);
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: var(--amarelo);
+      color: var(--azul-escuro);
+      box-shadow: 0 8px 18px rgba(242, 232, 26, 0.35);
+    }
+
+    #buscaConteudo {
+      width: 260px;
+      margin: 0;
+    }
+
+    .page {
+      max-width: var(--max-largura);
+      margin: 24px auto;
+      padding: 0 16px 30px;
+    }
+
+    .hero,
+    .panel,
+    .preview-card,
+    .noticia-destaque,
+    .home-destaque,
+    .home-mini-card,
+    .card-conteudo,
+    .drawer-card {
+      background: var(--cinza-card);
+      border: 1px solid rgba(217, 225, 236, 0.80);
+      border-radius: var(--radius);
+      box-shadow: var(--sombra);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      padding: 34px;
+      background:
+        linear-gradient(135deg, rgba(12, 22, 51, 0.98), rgba(31, 46, 216, 0.96)),
+        var(--cinza-card);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      right: -60px;
+      top: -60px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      left: -50px;
+      bottom: -70px;
+      background: rgba(242,232,26,0.12);
+    }
+
+    .hero-conteudo {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      margin: 0 0 12px;
+      font-size: 38px;
+      max-width: 760px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 780px;
+      line-height: 1.75;
+      color: #dbeafe;
+      font-size: 15px;
+    }
+
+    .hero-faixa {
+      display: inline-block;
+      background: var(--amarelo);
+      color: var(--azul-escuro);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 22px rgba(242, 232, 26, 0.18);
+    }
+
+    .hero-kicker {
+      color: #fde68a !important;
+      font-size: 13px !important;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px !important;
+    }
+
+    .hero-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .hero-info-box {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      padding: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-info-box strong {
+      display: block;
+      color: white;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .hero-info-box span {
+      color: #dbeafe;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hero-buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .section { margin-top: 24px; }
+    .section-header { margin-bottom: 16px; }
+
+    .section-title {
+      position: relative;
+      margin: 0;
+      font-size: 28px;
+      color: var(--azul-escuro);
+      padding-left: 14px;
+      border-left: 6px solid var(--amarelo);
+    }
+
+    .section-title::after {
+      content: "";
+      display: block;
+      width: 84px;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--azul-principal), var(--amarelo));
+      margin-top: 10px;
+    }
+
+    .section-subtitle {
+      margin: 8px 0 0;
+      color: var(--cinza-texto);
+      font-size: 14px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 24px;
+    }
+
+    .home-abertura {
+      margin-top: 24px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .home-banner-escola {
+      background: linear-gradient(90deg, var(--azul-escuro), var(--azul-principal));
+      color: white;
+      border-radius: 20px;
+      padding: 18px 20px;
+      border-left: 8px solid var(--amarelo);
+      box-shadow: var(--sombra);
+    }
+
+    .home-banner-escola strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .home-banner-escola span {
+      color: #dbeafe;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .home-destaque,
+    .noticia-destaque {
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      min-height: 410px;
+      border: 1px solid rgba(31,46,216,0.10);
+      box-shadow: var(--sombra-forte);
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.97));
+    }
+
+    .home-destaque-imagem,
+    .destaque-imagem {
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      object-position: center;
+      display: block;
+      background:
+        linear-gradient(135deg, rgba(31,46,216,0.06), rgba(242,232,26,0.10)),
+        #f8fafc;
+      border-right: 1px solid #e2e8f0;
+      padding: 14px;
+    }
+
+    .home-destaque-corpo,
+    .destaque-corpo {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .home-destaque-corpo::before,
+    .destaque-corpo::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--amarelo), var(--azul-principal));
+    }
+
+    .home-selo,
+    .destaque-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      background: var(--amarelo);
+      color: var(--azul-escuro);
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .home-destaque-titulo,
+    .destaque-titulo {
+      margin: 0 0 12px;
+      font-size: 36px;
+      line-height: 1.12;
+      color: var(--azul-escuro);
+    }
+
+    .home-destaque-resumo,
+    .destaque-resumo,
+    .card-resumo {
+      background: linear-gradient(180deg, #fffef2, #ffffff);
+      border: 1px solid #f4e7a1;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 0 0 18px;
+      color: var(--cinza-texto-escuro);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .home-destaque-meta,
+    .card-meta,
+    .destaque-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .home-destaque-meta span,
+    .card-meta span,
+    .meta-pill {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .home-atalhos {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .home-mini-card {
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-top: 5px solid var(--amarelo);
+    }
+
+    .home-mini-card.azul { border-top-color: var(--azul-principal); }
+    .home-mini-card.verde { border-top-color: var(--verde); }
+    .home-mini-card.roxo { border-top-color: var(--roxo); }
+
+    .home-mini-card h3 {
+      margin: 0 0 8px;
+      color: var(--azul-escuro);
+      font-size: 18px;
+    }
+
+    .home-mini-card p {
+      margin: 0 0 14px;
+      color: var(--cinza-texto);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .publicacao-assinatura {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .publicacao-escola {
+      font-size: 12px;
+      color: var(--azul-principal);
+      font-weight: bold;
+      letter-spacing: 0.3px;
+    }
+
+    .publicacao-data {
+      font-size: 12px;
+      color: var(--cinza-texto);
+      font-weight: bold;
+    }
+
+    .noticias-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .card-conteudo {
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(31, 46, 216, 0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.97));
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-conteudo:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+    }
+
+    .card-conteudo::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 8px;
+      background: linear-gradient(180deg, var(--azul-principal), var(--amarelo));
+    }
+
+    .card-conteudo.secao-eventos::before {
+      background: linear-gradient(180deg, #2563eb, #60a5fa);
+    }
+
+    .card-conteudo.secao-projetos::before {
+      background: linear-gradient(180deg, #15803d, #86efac);
+    }
+
+    .card-conteudo.secao-comunidade::before {
+      background: linear-gradient(180deg, #9333ea, #d8b4fe);
+    }
+
+    .card-imagem {
+      width: 100%;
+      height: 300px;
+      object-position: center;
+      display: block;
+      background:
+        linear-gradient(135deg, rgba(31,46,216,0.06), rgba(242,232,26,0.10)),
+        #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 14px;
+    }
+
+    .card-corpo {
+      padding: 24px;
+      background-image: linear-gradient(transparent 97%, rgba(31,46,216,0.03) 100%);
+      background-size: 100% 42px;
+    }
+
+    .tag-secao {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #eef2ff;
+      color: var(--azul-principal);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      border: 1px solid #dbeafe;
+    }
+
+    .card-titulo {
+      margin: 0 0 12px;
+      font-size: 28px;
+      line-height: 1.18;
+      color: var(--azul-escuro);
+    }
+
+    .card-texto {
+      line-height: 1.8;
+      font-size: 15px;
+      color: #334155;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .card-texto p { margin: 0 0 12px; }
+    .card-texto h1,
+    .card-texto h2,
+    .card-texto h3,
+    .card-texto h4 {
+      color: var(--azul-escuro);
+      line-height: 1.3;
+      margin-top: 18px;
+      margin-bottom: 10px;
+    }
+
+    .card-texto ul,
+    .card-texto ol {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+
+    .card-texto blockquote {
+      margin: 14px 0;
+      padding: 12px 16px;
+      border-left: 4px solid var(--amarelo);
+      background: #f8fafc;
+      border-radius: 10px;
+    }
+
+    .card-texto a {
+      color: var(--azul-principal);
+      font-weight: bold;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(31,46,216,0.25);
+    }
+
+    .card-texto a:hover {
+      border-bottom-color: var(--azul-principal);
+    }
+
+    .conteudo-colapsavel {
+      position: relative;
+      max-height: 300px;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+
+    .conteudo-colapsavel:not(.expandido)::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 90px;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,1));
+      pointer-events: none;
+    }
+
+    .conteudo-colapsavel.expandido {
+      max-height: none;
+    }
+
+    .acoes {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .drawer-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,250,252,0.98));
+    }
+
+    .drawer-card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: var(--azul-escuro);
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mini-item {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border-left: 5px solid var(--amarelo);
+    }
+
+    .mini-item strong {
+      display: block;
+      line-height: 1.4;
+      color: var(--azul-escuro);
+      margin-bottom: 4px;
+    }
+
+    .mini-item small {
+      color: var(--cinza-texto);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      background: white;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 15px;
+      color: var(--preto);
+      outline: none;
+      transition: var(--transicao);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus,
+    .editor-area:focus {
+      border-color: var(--azul-principal);
+      box-shadow: 0 0 0 4px rgba(31, 46, 216, 0.12);
+    }
+
+    .muted {
+      color: var(--cinza-texto);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .empty {
+      padding: 20px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.65);
+      color: var(--cinza-texto);
+    }
+
+    .badge-inline {
+      display: inline-block;
+      background: #fef2f2;
+      color: var(--vermelho);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .toolbar-wrapper {
+      border: 1px solid var(--cinza-borda);
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
+      margin-bottom: 12px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--cinza-borda);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .tool-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-right: 8px;
+      margin-right: 4px;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .tool-group:last-child {
+      border-right: none;
+      padding-right: 0;
+      margin-right: 0;
+    }
+
+    .tool-btn,
+    .tool-select,
+    .tool-color {
+      border: 1px solid var(--cinza-borda);
+      background: white;
+      color: var(--azul-escuro);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      min-height: 42px;
+      min-width: 42px;
+      transition: var(--transicao);
+    }
+
+    .tool-btn:hover,
+    .tool-select:hover,
+    .tool-color:hover {
+      background: #eef2ff;
+    }
+
+    .tool-btn.active {
+      background: var(--azul-principal);
+      color: white;
+      border-color: var(--azul-principal);
+      box-shadow: 0 0 0 3px rgba(31, 46, 216, 0.12);
+    }
+
+    .tool-select {
+      min-width: 120px;
+      padding-right: 34px;
+    }
+
+    .tool-color {
+      padding: 6px;
+      width: 46px;
+    }
+
+    .editor-area {
+      min-height: 260px;
+      background: white;
+      padding: 16px;
+      font-size: 16px;
+      line-height: 1.7;
+      outline: none;
+      margin: 0;
+      overflow-wrap: break-word;
+    }
+
+    .editor-area:empty:before {
+      content: attr(data-placeholder);
+      color: #98a2b3;
+    }
+
+    .editor-area h1,
+    .editor-area h2,
+    .editor-area h3 {
+      color: var(--azul-escuro);
+      margin-top: 14px;
+      margin-bottom: 10px;
+    }
+
+    .editor-area blockquote {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-left: 4px solid var(--amarelo);
+      background: #f8fafc;
+      border-radius: 10px;
+    }
+
+    .upload-box {
+      border: 1px dashed #b8c5d7;
+      border-radius: 16px;
+      background: #fbfdff;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .upload-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .preview-thumb-wrap {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .preview-thumb {
+      width: 120px;
+      height: 85px;
+      object-position: center;
+      border-radius: 12px;
+      border: 1px solid var(--cinza-borda);
+      background: #f1f5f9;
+      padding: 6px;
+    }
+
+    .editor-status {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: var(--azul-principal);
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.05s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover { opacity: 0.98; }
+    button:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--azul-principal);
+      color: var(--branco);
+      box-shadow: 0 12px 22px rgba(31,46,216,0.18);
+    }
+
+    .btn-secondary {
+      background: #475569;
+      color: var(--branco);
+    }
+
+    .btn-light {
+      background: var(--amarelo);
+      color: var(--azul-escuro);
+      box-shadow: 0 12px 22px rgba(242,232,26,0.18);
+    }
+
+    .btn-success {
+      background: var(--verde);
+      color: var(--branco);
+    }
+
+    .btn-warning {
+      background: var(--laranja);
+      color: var(--branco);
+    }
+
+    .btn-danger {
+      background: var(--vermelho);
+      color: var(--branco);
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--azul-escuro);
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .preview-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .preview-card {
+      width: min(920px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 20px;
+      border-radius: 24px;
+      background: white;
+    }
+
+    .preview-card h2 {
+      margin-top: 0;
+      color: var(--azul-escuro);
+    }
+
+    .preview-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 360px;
+      object-position: center;
+      border-radius: 18px;
+      margin-bottom: 16px;
+      background:
+        linear-gradient(135deg, rgba(31,46,216,0.04), rgba(242,232,26,0.08)),
+        #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 10px;
+    }
+
+    .mobile-section-label { display: none; }
+
+    footer {
+      margin-top: 30px;
+      background: linear-gradient(135deg, var(--azul-escuro), var(--azul-principal));
+      color: white;
+      border-top: 5px solid var(--amarelo);
+    }
+
+    .footer-inner {
+      max-width: var(--max-largura);
+      margin: 0 auto;
+      padding: 26px 16px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .footer-card h4 {
+      color: white;
+      position: relative;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .footer-card h4::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--amarelo);
+      margin-top: 8px;
+    }
+
+    .footer-card p,
+    .footer-card li {
+      color: #dbeafe;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .footer-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .footer-copy {
+      border-top: 1px solid rgba(255,255,255,0.15);
+      text-align: center;
+      padding: 14px;
+      color: #dbeafe;
+      font-size: 13px;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.36);
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transicao);
+      z-index: 180;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .aba-lateral {
+      position: fixed;
+      right: -272px;
+      top: 160px;
+      width: 330px;
+      z-index: 200;
+      display: flex;
+      align-items: stretch;
+      transition: right 0.28s ease;
+      pointer-events: auto;
+    }
+
+    .aba-lateral.open {
+      right: 0;
+    }
+
+    .aba-lateral.pinada .aba-gatilho {
+      background: linear-gradient(180deg, var(--amarelo), #f4de0f);
+      color: var(--azul-escuro);
+    }
+
+    .aba-gatilho {
+      width: 58px;
+      background: linear-gradient(180deg, var(--azul-escuro), var(--azul-principal));
+      color: white;
+      border-radius: 18px 0 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      padding: 16px 10px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: var(--sombra);
+      border-left: 4px solid var(--amarelo);
+      user-select: none;
+    }
+
+    .aba-conteudo {
+      width: 272px;
+      background: white;
+      border: 1px solid #dbe2ec;
+      border-right: none;
+      border-radius: 18px 0 0 18px;
+      box-shadow: var(--sombra-forte);
+      padding: 18px;
+      max-height: calc(100vh - 190px);
+      overflow-y: auto;
+    }
+
+    .aba-conteudo h3 {
+      margin: 0 0 10px;
+      color: var(--azul-escuro);
+      font-size: 18px;
+    }
+
+    .aba-conteudo p {
+      margin: 0 0 14px;
+      color: var(--cinza-texto);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .aba-lista {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .aba-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid var(--amarelo);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: #334155;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transicao);
+    }
+
+    .aba-item:hover {
+      background: #eef2ff;
+    }
+
+    .drawer-divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 18px 0;
+    }
+
+    .toast-area {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 1200;
+      display: grid;
+      gap: 10px;
+      width: min(360px, calc(100vw - 24px));
+    }
+
+    .toast {
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: var(--sombra-forte);
+      color: white;
+      font-weight: bold;
+      animation: slideUp 0.25s ease;
+    }
+
+    .toast.success { background: linear-gradient(135deg, #15803d, #16a34a); }
+    .toast.error { background: linear-gradient(135deg, #b91c1c, #dc2626); }
+    .toast.info { background: linear-gradient(135deg, #1d4ed8, #2563eb); }
+
+    .imagem-aviso {
+      font-size: 13px;
+      color: var(--cinza-texto);
+      margin-top: 6px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-info-grid,
+      .home-atalhos,
+      .mini-grid,
+      .noticias-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .home-destaque,
+      .noticia-destaque {
+        grid-template-columns: 1fr;
+      }
+
+      .home-destaque-imagem,
+      .destaque-imagem {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        min-height: 280px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      :root {
+        --topo-altura: 74px;
+      }
+
+      header {
+        position: sticky;
+      }
+
+      .topbar {
+        min-height: 74px;
+        padding: 10px 0;
+      }
+
+      .brand-text h1 { font-size: 22px; }
+      .brand-text p { font-size: 13px; }
+      .logo-escola {
+        width: 60px;
+        height: 60px;
+      }
+
+      .menu-mobile-btn,
+      .btn-atalho-lateral {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .chip {
+        display: none;
+      }
+
+      .nav {
+        top: var(--topo-altura);
+      }
+
+      .nav-inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 0;
+        gap: 10px;
+      }
+
+      .nav-left {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .nav-left.open {
+        display: grid;
+      }
+
+      .nav-right {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+      }
+
+      #buscaConteudo {
+        width: 100%;
+      }
+
+      .nav-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .page {
+        margin-top: 14px;
+        padding: 0 10px 20px;
+        gap: 16px;
+      }
+
+      .hero {
+        padding: 24px;
+        border-radius: 18px;
+      }
+
+      .hero h2 { font-size: 28px; }
+      .home-destaque-titulo,
+      .destaque-titulo { font-size: 27px; }
+      .card-titulo { font-size: 24px; }
+
+      .card-imagem { height: 230px; }
+
+      .btn-row,
+      .acoes,
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      button { width: 100%; }
+
+      .toolbar {
+        gap: 6px;
+        padding: 8px;
+      }
+
+      .tool-group {
+        border-right: none;
+        width: 100%;
+        padding-right: 0;
+        margin-right: 0;
+      }
+
+      .tool-btn,
+      .tool-select,
+      .tool-color {
+        flex: 1 1 auto;
+      }
+
+      .editor-area {
+        min-height: 220px;
+        font-size: 15px;
+        padding: 14px;
+      }
+
+      .panel,
+      .card-corpo,
+      .home-destaque-corpo,
+      .destaque-corpo,
+      .preview-card {
+        padding: 16px;
+      }
+
+      .preview-image {
+        height: 230px;
+      }
+
+      .mobile-section-label {
+        display: inline-block;
+        background: #eff6ff;
+        color: var(--azul-principal);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .aba-lateral {
+        top: auto;
+        bottom: 18px;
+        right: -252px;
+        width: 310px;
+      }
+
+      .aba-gatilho {
+        width: 58px;
+      }
+
+      .aba-conteudo {
+        width: 252px;
+        max-height: 72vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="drawerOverlay" class="drawer-overlay"></div>
+
+  <div id="abaLateral" class="aba-lateral">
+    <div id="abaGatilho" class="aba-gatilho" title="Abrir painel lateral">Acesso rápido</div>
+
+    <div class="aba-conteudo">
+      <h3>Painel rápido</h3>
+      <p>Abra seções do site, faça login e acompanhe os destaques.</p>
+
+      <div class="aba-lista">
+        <div class="aba-item" data-go="inicio">Início</div>
+        <div class="aba-item" data-go="noticias">Notícias</div>
+        <div class="aba-item" data-go="eventos">Eventos</div>
+        <div class="aba-item" data-go="projetos">Projetos</div>
+        <div class="aba-item" data-go="comunidade">Comunidade Escolar</div>
+      </div>
+
+      <div class="drawer-divider"></div>
+
+      <div id="drawerLoginCard">
+        <h3>Entrar</h3>
+        <input id="loginEmail" type="email" placeholder="Email" />
+        <input id="loginSenha" type="password" placeholder="Senha" />
+
+        <div class="btn-row">
+          <button id="btnLogin" class="btn-primary" type="button">Entrar</button>
+          <button id="btnAbrirCadastro" class="btn-light" type="button">Cadastro</button>
+        </div>
+
+        <p class="muted">Você pode ler sem login. O login é só para publicar e aprovar conteúdos.</p>
+      </div>
+
+      <div id="drawerCadastroCard" class="hidden">
+        <h3>Criar cadastro</h3>
+        <input id="cadastroNome" placeholder="Nome de usuário" />
+        <input id="cadastroEmail" type="email" placeholder="Email" />
+        <input id="cadastroSenha" type="password" placeholder="Senha" />
+
+        <select id="cadastroTipo">
+          <option value="aluno">Aluno</option>
+          <option value="professor">Professor</option>
+          <option value="pais">Pais</option>
+        </select>
+
+        <div class="btn-row">
+          <button id="btnCadastrar" class="btn-primary" type="button">Criar conta</button>
+          <button id="btnVoltarLogin" class="btn-light" type="button">Voltar</button>
+        </div>
+      </div>
+
+      <div id="drawerUsuarioCard" class="hidden">
+        <h3>Sua conta</h3>
+        <div class="mini-list" style="margin-bottom:12px;">
+          <div class="mini-item">
+            <strong id="usuarioNomeDrawer">Usuário</strong>
+            <small id="usuarioTipoDrawer">Perfil</small>
+          </div>
+        </div>
+        <button id="btnSair" class="btn-danger" type="button">Sair</button>
+      </div>
+
+      <div class="drawer-divider"></div>
+
+      <h3>Destaques</h3>
+      <div id="miniNoticias" class="mini-list"></div>
+
+      <div class="drawer-divider"></div>
+
+      <h3>Sobre</h3>
+      <p class="muted">
+        Este espaço mostra notícias, projetos e eventos da escola de forma mais organizada e fácil de ler.
+      </p>
+    </div>
+  </div>
+
+  <header>
+    <div class="container topbar">
+      <div class="brand-topo fade-in">
+        <img src="https://res.cloudinary.com/dkbl5tbkv/image/upload/f_auto,q_auto/escola_u6b5yy" alt="Logo da escola" class="logo-escola">
+        <div class="brand-text">
+          <h1>Jornal Escolar</h1>
+          <p>EEF Vereador Alfredo Scottini • Notícias, projetos e eventos</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <span id="usuarioNome" class="chip hidden"></span>
+        <span id="usuarioTipo" class="chip hidden"></span>
+        <button id="btnMenuMobile" class="menu-mobile-btn" type="button">☰ Menu</button>
+        <button id="btnAbrirLateralTopo" class="btn-atalho-lateral" type="button">Painel</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <div class="container nav-inner">
+      <div id="navLeft" class="nav-left">
+        <button class="nav-btn active" data-section="inicio">Início</button>
+        <button class="nav-btn" data-section="noticias">Notícias</button>
+        <button class="nav-btn" data-section="eventos">Eventos</button>
+        <button class="nav-btn" data-section="projetos">Projetos</button>
+        <button class="nav-btn" data-section="comunidade">Comunidade Escolar</button>
+      </div>
+
+      <div class="nav-right">
+        <input id="buscaConteudo" placeholder="Pesquisar..." />
+        <button id="btnAbrirLateralNav" class="btn-secondary" type="button">Acesso</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <main>
+
+      <section id="sec-inicio" class="page-section fade-in">
+        <div class="hero slide-up">
+          <div class="hero-faixa">Portal da escola</div>
+
+          <div class="hero-conteudo">
+            <p class="hero-kicker">EEF Vereador Alfredo Scottini</p>
+            <h2>Jornal da escola</h2>
+            <p>
+              Aqui você encontra notícias, eventos, projetos e conteúdos da nossa escola de forma simples, organizada e com leitura mais agradável no computador e no celular.
+            </p>
+
+            <div class="hero-info-grid">
+              <div class="hero-info-box">
+                <strong>Notícias</strong>
+                <span>Veja o que aconteceu na escola.</span>
+              </div>
+              <div class="hero-info-box">
+                <strong>Projetos</strong>
+                <span>Conheça trabalhos e atividades.</span>
+              </div>
+              <div class="hero-info-box">
+                <strong>Comunidade</strong>
+                <span>Um espaço para escola e famílias.</span>
+              </div>
+            </div>
+
+            <div class="hero-buttons">
+              <button class="btn-light" onclick="mostrarSecao('noticias')">Ver notícias</button>
+              <button class="btn-light" onclick="mostrarSecao('eventos')">Ver eventos</button>
+              <button class="btn-light" onclick="mostrarSecao('projetos')">Ver projetos</button>
+              <button class="btn-light" onclick="mostrarSecao('comunidade')">Ver comunidade</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-abertura">
+          <div class="home-banner-escola">
+            <strong>Destaque da escola</strong>
+            <span>A principal publicação aparece logo na abertura do site.</span>
+          </div>
+
+          <div id="homeDestaqueArea"></div>
+
+          <div class="home-atalhos">
+            <div class="home-mini-card azul">
+              <h3>Notícias</h3>
+              <p>Veja novidades e registros da escola.</p>
+              <button class="btn-primary" onclick="mostrarSecao('noticias')">Abrir</button>
+            </div>
+
+            <div class="home-mini-card verde">
+              <h3>Projetos</h3>
+              <p>Conheça atividades e trabalhos feitos na escola.</p>
+              <button class="btn-success" onclick="mostrarSecao('projetos')">Abrir</button>
+            </div>
+
+            <div class="home-mini-card roxo">
+              <h3>Comunidade</h3>
+              <p>Veja conteúdos ligados aos alunos, famílias e professores.</p>
+              <button class="btn-secondary" onclick="mostrarSecao('comunidade')">Abrir</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-noticias" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">Notícias</h2>
+          <p class="section-subtitle">Veja as publicações da escola.</p>
+        </div>
+        <div id="lista-noticias" class="cards"></div>
+      </section>
+
+      <section id="sec-eventos" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">Eventos</h2>
+          <p class="section-subtitle">Reuniões, apresentações e atividades.</p>
+        </div>
+        <div id="lista-eventos" class="cards"></div>
+      </section>
+
+      <section id="sec-projetos" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">Projetos</h2>
+          <p class="section-subtitle">Veja os trabalhos e ações da escola.</p>
+        </div>
+        <div id="lista-projetos" class="cards"></div>
+      </section>
+
+      <section id="sec-comunidade" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">Comunidade Escolar</h2>
+          <p class="section-subtitle">Um espaço para escola, alunos e famílias.</p>
+        </div>
+        <div id="lista-comunidade" class="cards"></div>
+      </section>
+
+      <section id="painelEnvio" class="hidden section">
+        <div id="painelPublicacao" class="panel hidden">
+          <h2 class="section-title">Publicar conteúdo</h2>
+          <p class="muted">Escolha a parte do site, escreva e veja antes de publicar.</p>
+
+          <div id="statusEdicao" class="editor-status hidden">Você está editando uma publicação</div>
+
+          <select id="secaoConteudo">
+            <option value="noticias">Notícias</option>
+            <option value="eventos">Eventos</option>
+            <option value="projetos">Projetos</option>
+            <option value="comunidade">Comunidade Escolar</option>
+          </select>
+
+          <input id="titulo" placeholder="Título" />
+          <input id="imagem" placeholder="Link da imagem (opcional)" />
+
+          <div class="upload-box">
+            <div class="upload-row">
+              <input id="imagemArquivo" type="file" accept="image/*" style="margin:0;">
+              <button id="btnRemoverImagem" type="button" class="btn-danger hidden">Remover imagem</button>
+            </div>
+
+            <select id="modoImagem">
+              <option value="contain">Mostrar imagem inteira</option>
+              <option value="cover">Preencher espaço</option>
+            </select>
+
+            <p class="muted" style="margin:10px 0 0;">
+              Você pode colar um link ou enviar uma imagem do computador.
+            </p>
+
+            <div id="previewThumbWrap" class="preview-thumb-wrap hidden">
+              <img id="previewThumb" class="preview-thumb" alt="Prévia da imagem">
+              <span id="previewThumbText" class="muted">Prévia da imagem</span>
+            </div>
+            <div id="previewThumbAviso" class="imagem-aviso hidden"></div>
+          </div>
+
+          <div class="toolbar-wrapper">
+            <div class="toolbar" id="toolbarEditor">
+              <div class="tool-group">
+                <button type="button" class="tool-btn" data-command="bold" title="Negrito"><b>B</b></button>
+                <button type="button" class="tool-btn" data-command="italic" title="Itálico"><i>I</i></button>
+                <button type="button" class="tool-btn" data-command="underline" title="Sublinhado"><u>U</u></button>
+                <button type="button" class="tool-btn" data-command="strikeThrough" title="Riscado"><s>S</s></button>
+              </div>
+
+              <div class="tool-group">
+                <select class="tool-select" id="formatBlockSelect" title="Formato">
+                  <option value="">Formato</option>
+                  <option value="p">Parágrafo</option>
+                  <option value="h1">Título grande</option>
+                  <option value="h2">Subtítulo</option>
+                  <option value="h3">Título menor</option>
+                  <option value="blockquote">Citação</option>
+                </select>
+
+                <select class="tool-select" id="fontSizeSelect" title="Tamanho da fonte">
+                  <option value="">Tamanho</option>
+                  <option value="2">Pequeno</option>
+                  <option value="3">Normal</option>
+                  <option value="4">Médio</option>
+                  <option value="5">Grande</option>
+                  <option value="6">Muito grande</option>
+                </select>
+              </div>
+
+              <div class="tool-group">
+                <button type="button" class="tool-btn" data-command="insertUnorderedList" title="Lista com marcadores">• Lista</button>
+                <button type="button" class="tool-btn" data-command="insertOrderedList" title="Lista numerada">1. Lista</button>
+              </div>
+
+              <div class="tool-group">
+                <button type="button" class="tool-btn" data-command="justifyLeft" title="Alinhar à esquerda">⟸</button>
+                <button type="button" class="tool-btn" data-command="justifyCenter" title="Centralizar">≡</button>
+                <button type="button" class="tool-btn" data-command="justifyRight" title="Alinhar à direita">⟹</button>
+              </div>
+
+              <div class="tool-group">
+                <input type="color" id="textColorPicker" class="tool-color" title="Cor do texto" value="#000000">
+                <input type="color" id="highlightColorPicker" class="tool-color" title="Realce do texto" value="#fff59d">
+              </div>
+
+              <div class="tool-group">
+                <button type="button" class="tool-btn" id="btnCriarLink" title="Inserir link">🔗</button>
+                <button type="button" class="tool-btn" data-command="unlink" title="Remover link">❌🔗</button>
+              </div>
+
+              <div class="tool-group">
+                <button type="button" class="tool-btn" data-command="removeFormat" title="Limpar formatação">Tx</button>
+                <button type="button" class="tool-btn" data-command="undo" title="Desfazer">↶</button>
+                <button type="button" class="tool-btn" data-command="redo" title="Refazer">↷</button>
+              </div>
+            </div>
+
+            <div
+              id="conteudoEditor"
+              class="editor-area"
+              contenteditable="true"
+              data-placeholder="Escreva aqui..."
+            ></div>
+          </div>
+
+          <div class="btn-row">
+            <button id="btnPreview" class="btn-secondary" type="button">Ver antes</button>
+            <button id="btnPostar" class="btn-primary" type="button">Publicar</button>
+            <button id="btnCancelarEdicao" class="btn-light hidden" type="button">Cancelar edição</button>
+          </div>
+
+          <p class="muted">
+            Professores publicam direto. Conteúdos de alunos ficam aguardando aprovação.
+          </p>
+        </div>
+
+        <div id="painelModeracao" class="panel hidden" style="margin-top:18px;">
+          <h2 class="section-title">Conteúdos pendentes</h2>
+          <div id="lista-pendentes"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="previewModal" class="preview-modal hidden">
+    <div class="preview-card fade-in">
+      <div class="preview-head">
+        <h2>Prévia</h2>
+        <div class="btn-row">
+          <button id="btnFecharPreview" class="btn-danger" type="button">Fechar</button>
+        </div>
+      </div>
+
+      <div class="mobile-section-label" id="previewSecaoMobile"></div>
+      <span class="tag-secao" id="previewSecao"></span>
+      <h3 class="card-titulo" id="previewTitulo"></h3>
+      <div class="card-meta" id="previewMeta"></div>
+      <img id="previewImagem" class="preview-image hidden" alt="Prévia da imagem">
+      <div id="previewImagemAviso" class="imagem-aviso hidden"></div>
+      <div class="card-texto" id="previewConteudo"></div>
+    </div>
+  </div>
+
+  <div id="toastArea" class="toast-area"></div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-card">
+        <h4>Jornal Escolar</h4>
+        <p>Portal da Escola de Ensino Fundamental Vereador Alfredo Scottini.</p>
+      </div>
+      <div class="footer-card">
+        <h4>Seções</h4>
+        <ul>
+          <li>Notícias</li>
+          <li>Eventos</li>
+          <li>Projetos</li>
+          <li>Comunidade Escolar</li>
+        </ul>
+      </div>
+      <div class="footer-card">
+        <h4>Leitura</h4>
+        <p>Todos podem ler. O login é necessário só para publicar e aprovar.</p>
+      </div>
+    </div>
+    <div class="footer-copy">
+      © 2026 Jornal Escolar - EEF Vereador Alfredo Scottini
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      onSnapshot,
+      doc,
+      setDoc,
+      getDoc,
+      updateDoc,
+      deleteDoc,
+      query,
+      where,
+      orderBy,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxHU3ufYbXbzgVRzHgg1s-8YWwed-Kx_g",
+      authDomain: "jornal-escolar-4ce0a.firebaseapp.com",
+      projectId: "jornal-escolar-4ce0a",
+      storageBucket: "jornal-escolar-4ce0a.firebasestorage.app",
+      messagingSenderId: "232691710435",
+      appId: "1:232691710435:web:b0091834f29ef8aba908d6",
+      measurementId: "G-EVJ556PD0R"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const state = {
+      tipoUsuario: "",
+      nomeUsuario: "",
+      emailUsuario: "",
+      conteudosUnsubscribe: null,
+      pendentesUnsubscribe: null,
+      todosAprovados: [],
+      editandoId: null,
+      arquivoImagemAtual: null,
+      imagemStoragePathAtual: "",
+      objectUrlAtual: null,
+      searchTimer: null,
+      renderTimer: null,
+      lateralPinada: false,
+      lateralAberta: false,
+      conteudosExpandidos: new Set()
+    };
+
+    const els = {
+      navButtons: document.querySelectorAll(".nav-btn"),
+      navLeft: document.getElementById("navLeft"),
+      btnMenuMobile: document.getElementById("btnMenuMobile"),
+      btnAbrirLateralTopo: document.getElementById("btnAbrirLateralTopo"),
+      btnAbrirLateralNav: document.getElementById("btnAbrirLateralNav"),
+      drawerOverlay: document.getElementById("drawerOverlay"),
+      abaLateral: document.getElementById("abaLateral"),
+      abaGatilho: document.getElementById("abaGatilho"),
+      buscaConteudo: document.getElementById("buscaConteudo"),
+      conteudoEditor: document.getElementById("conteudoEditor"),
+      toolbarButtons: document.querySelectorAll(".tool-btn[data-command]"),
+      formatBlockSelect: document.getElementById("formatBlockSelect"),
+      fontSizeSelect: document.getElementById("fontSizeSelect"),
+      textColorPicker: document.getElementById("textColorPicker"),
+      highlightColorPicker: document.getElementById("highlightColorPicker"),
+      btnCriarLink: document.getElementById("btnCriarLink"),
+      imagemArquivo: document.getElementById("imagemArquivo"),
+      imagemInput: document.getElementById("imagem"),
+      modoImagemSelect: document.getElementById("modoImagem"),
+      previewThumb: document.getElementById("previewThumb"),
+      previewThumbWrap: document.getElementById("previewThumbWrap"),
+      previewThumbText: document.getElementById("previewThumbText"),
+      previewThumbAviso: document.getElementById("previewThumbAviso"),
+      btnRemoverImagem: document.getElementById("btnRemoverImagem"),
+      statusEdicao: document.getElementById("statusEdicao"),
+      btnCancelarEdicao: document.getElementById("btnCancelarEdicao"),
+      btnPreview: document.getElementById("btnPreview"),
+      homeDestaqueArea: document.getElementById("homeDestaqueArea"),
+      toastArea: document.getElementById("toastArea"),
+      previewModal: document.getElementById("previewModal"),
+      previewImagem: document.getElementById("previewImagem"),
+      previewImagemAviso: document.getElementById("previewImagemAviso"),
+      miniNoticias: document.getElementById("miniNoticias"),
+      loginEmail: document.getElementById("loginEmail"),
+      loginSenha: document.getElementById("loginSenha"),
+      cadastroNome: document.getElementById("cadastroNome"),
+      cadastroEmail: document.getElementById("cadastroEmail"),
+      cadastroSenha: document.getElementById("cadastroSenha"),
+      cadastroTipo: document.getElementById("cadastroTipo"),
+      drawerLoginCard: document.getElementById("drawerLoginCard"),
+      drawerCadastroCard: document.getElementById("drawerCadastroCard"),
+      drawerUsuarioCard: document.getElementById("drawerUsuarioCard"),
+      usuarioNome: document.getElementById("usuarioNome"),
+      usuarioTipo: document.getElementById("usuarioTipo"),
+      usuarioNomeDrawer: document.getElementById("usuarioNomeDrawer"),
+      usuarioTipoDrawer: document.getElementById("usuarioTipoDrawer")
+    };
+
+    const listas = {
+      noticias: document.getElementById("lista-noticias"),
+      eventos: document.getElementById("lista-eventos"),
+      projetos: document.getElementById("lista-projetos"),
+      comunidade: document.getElementById("lista-comunidade")
+    };
+
+    function isMobile() {
+      return window.matchMedia("(max-width: 760px)").matches;
+    }
+
+    function showToast(message, type = "info") {
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      els.toastArea.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(8px)";
+        setTimeout(() => toast.remove(), 220);
+      }, 2600);
+    }
+
+    function setOpenLateral(open, pin = false) {
+      state.lateralAberta = open;
+      state.lateralPinada = pin;
+      els.abaLateral.classList.toggle("open", open);
+      els.abaLateral.classList.toggle("pinada", pin);
+      els.drawerOverlay.classList.toggle("open", open && (pin || isMobile()));
+    }
+
+    function toggleLateralPinned() {
+      if (state.lateralAberta && state.lateralPinada) {
+        setOpenLateral(false, false);
+      } else {
+        setOpenLateral(true, true);
+      }
+    }
+
+    function fecharLateralSePossivel() {
+      if (state.lateralPinada) return;
+      setOpenLateral(false, false);
+    }
+
+    function iniciarAbaLateral() {
+      const gatilhoDesktopEnter = () => {
+        if (!isMobile() && !state.lateralPinada) setOpenLateral(true, false);
+      };
+      const gatilhoDesktopLeave = () => {
+        if (!isMobile() && !state.lateralPinada) setOpenLateral(false, false);
+      };
+
+      els.abaGatilho.addEventListener("mouseenter", gatilhoDesktopEnter);
+      els.abaLateral.addEventListener("mouseenter", gatilhoDesktopEnter);
+      els.abaLateral.addEventListener("mouseleave", gatilhoDesktopLeave);
+
+      els.abaGatilho.addEventListener("click", () => {
+        if (isMobile()) {
+          setOpenLateral(!state.lateralAberta, true);
+        } else {
+          toggleLateralPinned();
+        }
+      });
+
+      els.btnAbrirLateralTopo.addEventListener("click", () => setOpenLateral(true, true));
+      els.btnAbrirLateralNav.addEventListener("click", () => setOpenLateral(true, true));
+      els.drawerOverlay.addEventListener("click", () => setOpenLateral(false, false));
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setOpenLateral(false, false);
+          fecharPreview();
+        }
+      });
+
+      document.querySelectorAll(".aba-item[data-go]").forEach(item => {
+        item.addEventListener("click", () => {
+          mostrarSecao(item.dataset.go);
+          if (isMobile()) setOpenLateral(false, false);
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        if (!isMobile()) {
+          els.navLeft.classList.remove("open");
+          els.drawerOverlay.classList.remove("open");
+          if (!state.lateralPinada && !state.lateralAberta) {
+            setOpenLateral(false, false);
+          }
+        }
+      });
+    }
+
+    function abrirCadastro() {
+      els.drawerLoginCard.classList.add("hidden");
+      els.drawerCadastroCard.classList.remove("hidden");
+      setOpenLateral(true, true);
+    }
+
+    function voltarLogin() {
+      els.drawerCadastroCard.classList.add("hidden");
+      els.drawerLoginCard.classList.remove("hidden");
+    }
+
+    function atualizarAreaUsuarioLogado(logado) {
+      els.usuarioNome.classList.toggle("hidden", !logado);
+      els.usuarioTipo.classList.toggle("hidden", !logado);
+      els.drawerUsuarioCard.classList.toggle("hidden", !logado);
+
+      if (logado) {
+        els.drawerLoginCard.classList.add("hidden");
+        els.drawerCadastroCard.classList.add("hidden");
+      } else {
+        els.drawerUsuarioCard.classList.add("hidden");
+        els.drawerCadastroCard.classList.add("hidden");
+        els.drawerLoginCard.classList.remove("hidden");
+      }
+    }
+
+    function focarEditor() {
+      els.conteudoEditor.focus();
+    }
+
+    function executarComando(command) {
+      focarEditor();
+      document.execCommand(command, false, null);
+      atualizarEstadoToolbar();
+    }
+
+    function atualizarEstadoToolbar() {
+      const comandosEstado = [
+        "bold",
+        "italic",
+        "underline",
+        "strikeThrough",
+        "insertUnorderedList",
+        "insertOrderedList",
+        "justifyLeft",
+        "justifyCenter",
+        "justifyRight"
+      ];
+
+      els.toolbarButtons.forEach(btn => {
+        const cmd = btn.dataset.command;
+        if (comandosEstado.includes(cmd)) {
+          let ativo = false;
+          try {
+            ativo = document.queryCommandState(cmd);
+          } catch {
+            ativo = false;
+          }
+          btn.classList.toggle("active", ativo);
+        }
+      });
+    }
+
+    function debounceRender() {
+      clearTimeout(state.searchTimer);
+      state.searchTimer = setTimeout(() => {
+        cancelAnimationFrame(state.renderTimer);
+        state.renderTimer = requestAnimationFrame(renderizarConteudos);
+      }, 220);
+    }
+
+    function limparObjectUrl() {
+      if (state.objectUrlAtual) {
+        URL.revokeObjectURL(state.objectUrlAtual);
+        state.objectUrlAtual = null;
+      }
+    }
+
+    function obterImagemFinalLocal() {
+      return els.imagemInput.value.trim() || "";
+    }
+
+    function esconderAvisoImagem() {
+      els.previewThumbAviso.classList.add("hidden");
+      els.previewThumbAviso.textContent = "";
+    }
+
+    function mostrarAvisoImagem(msg) {
+      els.previewThumbAviso.textContent = msg;
+      els.previewThumbAviso.classList.remove("hidden");
+    }
+
+    function atualizarPreviewMiniatura() {
+      limparObjectUrl();
+      esconderAvisoImagem();
+
+      if (state.arquivoImagemAtual) {
+        state.objectUrlAtual = URL.createObjectURL(state.arquivoImagemAtual);
+        els.previewThumb.src = state.objectUrlAtual;
+        els.previewThumb.style.objectFit = els.modoImagemSelect.value || "contain";
+        els.previewThumbWrap.classList.remove("hidden");
+        els.btnRemoverImagem.classList.remove("hidden");
+        els.previewThumbText.textContent = "Prévia da imagem enviada";
+        return;
+      }
+
+      const imagem = obterImagemFinalLocal();
+      if (imagem) {
+        els.previewThumb.src = imagem;
+        els.previewThumb.style.objectFit = els.modoImagemSelect.value || "contain";
+        els.previewThumbWrap.classList.remove("hidden");
+        els.btnRemoverImagem.classList.remove("hidden");
+        els.previewThumbText.textContent = "Prévia da imagem pelo link";
+      } else {
+        els.previewThumb.src = "";
+        els.previewThumbWrap.classList.add("hidden");
+        els.btnRemoverImagem.classList.add("hidden");
+      }
+    }
+
+    async function enviarImagemParaStorage(user) {
+      if (!state.arquivoImagemAtual) {
+        return {
+          url: els.imagemInput.value.trim() || "",
+          storagePath: state.imagemStoragePathAtual || ""
+        };
+      }
+
+      const extensao = state.arquivoImagemAtual.name.split(".").pop() || "jpg";
+      const nomeArquivo = `conteudos/${user.uid}/${Date.now()}.${extensao}`;
+      const storageRef = ref(storage, nomeArquivo);
+
+      await uploadBytes(storageRef, state.arquivoImagemAtual);
+      const url = await getDownloadURL(storageRef);
+
+      return { url, storagePath: nomeArquivo };
+    }
+
+    function nomeSecao(secao) {
+      const nomes = {
+        noticias: "Notícias",
+        eventos: "Eventos",
+        projetos: "Projetos",
+        comunidade: "Comunidade Escolar"
+      };
+      return nomes[secao] || secao;
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttribute(text) {
+      return String(text ?? "").replaceAll('"', "&quot;");
+    }
+
+    function stripHtml(html) {
+      const temp = document.createElement("div");
+      temp.innerHTML = html;
+      return temp.textContent || temp.innerText || "";
+    }
+
+    function extrairResumo(html, limite = 220) {
+      const texto = stripHtml(html).trim();
+      if (!texto) return "";
+      if (texto.length <= limite) return texto;
+      return texto.slice(0, limite).trim() + "...";
+    }
+
+    function formatarData(data) {
+      if (!data) return "Data não informada";
+
+      try {
+        let dataObj = null;
+
+        if (typeof data.toDate === "function") {
+          dataObj = data.toDate();
+        } else if (data instanceof Date) {
+          dataObj = data;
+        } else {
+          dataObj = new Date(data);
+        }
+
+        if (Number.isNaN(dataObj.getTime())) return "Data não informada";
+
+        return new Intl.DateTimeFormat("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }).format(dataObj);
+      } catch {
+        return "Data não informada";
+      }
+    }
+
+    function sanitizeInlineStyle(styleText) {
+      const allowed = [
+        "color",
+        "background-color",
+        "text-align",
+        "font-size",
+        "font-weight",
+        "font-style",
+        "text-decoration"
+      ];
+
+      const temp = document.createElement("span");
+      temp.setAttribute("style", styleText);
+
+      const safeStyles = [];
+      for (const prop of allowed) {
+        const value = temp.style.getPropertyValue(prop);
+        if (!value) continue;
+
+        const lower = value.toLowerCase();
+        if (
+          lower.includes("url(") ||
+          lower.includes("expression(") ||
+          lower.includes("javascript:") ||
+          lower.includes("fixed") ||
+          lower.includes("absolute")
+        ) {
+          continue;
+        }
+
+        safeStyles.push(`${prop}:${value}`);
+      }
+
+      return safeStyles.join("; ");
+    }
+
+    function sanitizeBasicHtml(html) {
+      const permitido = new Set([
+        "B", "I", "U", "S", "P", "BR", "H1", "H2", "H3", "H4",
+        "UL", "OL", "LI", "BLOCKQUOTE", "A", "SPAN", "STRONG", "EM"
+      ]);
+
+      const temp = document.createElement("div");
+      temp.innerHTML = String(html);
+
+      const elementos = [...temp.querySelectorAll("*")];
+
+      elementos.forEach(el => {
+        if (!permitido.has(el.tagName)) {
+          const fragment = document.createDocumentFragment();
+          while (el.firstChild) fragment.appendChild(el.firstChild);
+          el.replaceWith(fragment);
+          return;
+        }
+
+        [...el.attributes].forEach(attr => {
+          const nome = attr.name.toLowerCase();
+
+          if (nome.startsWith("on")) {
+            el.removeAttribute(attr.name);
+            return;
+          }
+
+          if (nome === "href") {
+            const href = attr.value.trim();
+            const hrefLower = href.toLowerCase();
+            const seguro = hrefLower.startsWith("http://") || hrefLower.startsWith("https://") || hrefLower.startsWith("mailto:");
+
+            if (!seguro) {
+              el.removeAttribute("href");
+            } else {
+              el.setAttribute("href", href);
+              el.setAttribute("target", "_blank");
+              el.setAttribute("rel", "noopener noreferrer");
+            }
+            return;
+          }
+
+          if (nome === "style") {
+            const styleSeguro = sanitizeInlineStyle(attr.value);
+            if (styleSeguro) {
+              el.setAttribute("style", styleSeguro);
+            } else {
+              el.removeAttribute("style");
+            }
+            return;
+          }
+
+          el.removeAttribute(attr.name);
+        });
+      });
+
+      return temp.innerHTML.trim();
+    }
+
+    function usuarioPodeEditar(item) {
+      if (!auth.currentUser) return false;
+      return state.tipoUsuario === "professor" || item.autorEmail === auth.currentUser.email;
+    }
+
+    function gerarBlocoImagem(imagem, classe, modoImagem, alt) {
+      if (!imagem) return "";
+      return `<img class="${classe}" loading="lazy" style="object-fit:${escapeAttribute(modoImagem || "contain")}" src="${escapeAttribute(imagem)}" alt="${escapeAttribute(alt)}" onerror="this.style.display='none'">`;
+    }
+
+    function gerarMeta(item) {
+      return `
+        <div class="card-meta">
+          <span>Autor: ${escapeHtml(item.autor || "Não informado")}</span>
+          <span>Perfil: ${escapeHtml(item.tipoAutor || "")}</span>
+          <span>Data: ${escapeHtml(formatarData(item.data))}</span>
+        </div>
+      `;
+    }
+
+    function precisaExpandir(html) {
+      return stripHtml(html).trim().length > 380;
+    }
+
+    function gerarConteudoPublicacao(item, classeExtra = "") {
+      const expandido = state.conteudosExpandidos.has(item.id);
+      const precisa = precisaExpandir(item.conteudo || "");
+      const conteudoSeguro = sanitizeBasicHtml(item.conteudo || "");
+
+      return `
+        <div class="card-texto conteudo-colapsavel ${expandido ? "expandido" : ""} ${classeExtra}" id="conteudo-${escapeAttribute(item.id)}">
+          ${conteudoSeguro}
+        </div>
+        ${precisa ? `
+          <div class="acoes" style="margin-top:12px;">
+            <button class="btn-outline" onclick="window.toggleExpandirConteudo('${item.id}')">
+              ${expandido ? "Mostrar menos" : "Ler conteúdo completo"}
+            </button>
+          </div>
+        ` : ""}
+      `;
+    }
+
+    function gerarBotoesGestao(item) {
+      const podeEditar = usuarioPodeEditar(item);
+      const botaoEditar = podeEditar
+        ? `<button class="btn-warning" onclick="window.editarConteudo('${item.id}')">Editar</button>`
+        : "";
+
+      const botaoExcluir = state.tipoUsuario === "professor"
+        ? `<button class="btn-danger" onclick="window.excluirConteudo('${item.id}')">Apagar</button>`
+        : "";
+
+      if (!botaoEditar && !botaoExcluir) return "";
+      return `<div class="acoes">${botaoEditar}${botaoExcluir}</div>`;
+    }
+
+    function renderizarHomeDestaque(itemsNoticias) {
+      if (!itemsNoticias.length) {
+        els.homeDestaqueArea.innerHTML = `
+          <div class="empty">
+            Ainda não há notícia aprovada para aparecer em destaque.
+          </div>
+        `;
+        return;
+      }
+
+      const destaque = itemsNoticias[0];
+      const resumo = extrairResumo(destaque.conteudo, 260);
+
+      els.homeDestaqueArea.innerHTML = `
+        <article class="home-destaque slide-up">
+          ${gerarBlocoImagem(destaque.imagem, "home-destaque-imagem", destaque.modoImagem, "Destaque escolar")}
+          <div class="home-destaque-corpo">
+            <span class="home-selo">🏫 Destaque da escola</span>
+            <h3 class="home-destaque-titulo">${escapeHtml(destaque.titulo)}</h3>
+
+            <div class="home-destaque-meta">
+              <span>Autor: ${escapeHtml(destaque.autor || "Não informado")}</span>
+              <span>Perfil: ${escapeHtml(destaque.tipoAutor || "")}</span>
+              <span>Data: ${escapeHtml(formatarData(destaque.data))}</span>
+            </div>
+
+            <div class="home-destaque-resumo">${escapeHtml(resumo)}</div>
+
+            <div class="publicacao-assinatura">
+              <span class="publicacao-escola">Jornal Escolar • EEF Vereador Alfredo Scottini</span>
+              <span class="publicacao-data">Em destaque</span>
+            </div>
+
+            <div class="acoes">
+              <button class="btn-primary" onclick="mostrarSecao('noticias')">Ir para notícias</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderizarNoticias(destino, items) {
+      if (!items.length) {
+        destino.innerHTML = `<div class="empty">Nenhuma notícia encontrada.</div>`;
+        return;
+      }
+
+      const [destaque, ...restantes] = items;
+      destino.innerHTML = `
+        <article class="noticia-destaque slide-up">
+          ${gerarBlocoImagem(destaque.imagem, "destaque-imagem", destaque.modoImagem, "Imagem da notícia principal")}
+          <div class="destaque-corpo">
+            <span class="destaque-label">⭐ Notícia em destaque</span>
+            <h3 class="destaque-titulo">${escapeHtml(destaque.titulo)}</h3>
+            <div class="destaque-meta">
+              <span class="meta-pill">Autor: ${escapeHtml(destaque.autor || "Não informado")}</span>
+              <span class="meta-pill">Perfil: ${escapeHtml(destaque.tipoAutor || "")}</span>
+              <span class="meta-pill">Data: ${escapeHtml(formatarData(destaque.data))}</span>
+            </div>
+            <div class="destaque-resumo">${escapeHtml(extrairResumo(destaque.conteudo, 260))}</div>
+            ${gerarConteudoPublicacao(destaque)}
+            <div class="publicacao-assinatura">
+              <span class="publicacao-escola">Jornal Escolar • EEF Vereador Alfredo Scottini</span>
+              <span class="publicacao-data">Publicação da escola</span>
+            </div>
+            ${gerarBotoesGestao(destaque)}
+          </div>
+        </article>
+      `;
+
+      if (restantes.length) {
+        const grid = document.createElement("div");
+        grid.className = "noticias-grid";
+        destino.appendChild(grid);
+
+        restantes.forEach(item => {
+          grid.innerHTML += `
+            <article class="card-conteudo secao-noticias slide-up">
+              ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem da notícia")}
+              <div class="card-corpo">
+                <span class="tag-secao">📰 Notícias</span>
+                <h3 class="card-titulo">${escapeHtml(item.titulo)}</h3>
+                ${gerarMeta(item)}
+                <div class="card-resumo">${escapeHtml(extrairResumo(item.conteudo, 170))}</div>
+                ${gerarConteudoPublicacao(item)}
+                <div class="publicacao-assinatura">
+                  <span class="publicacao-escola">EEF Vereador Alfredo Scottini</span>
+                  <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
+                </div>
+                ${gerarBotoesGestao(item)}
+              </div>
+            </article>
+          `;
+        });
+      }
+    }
+
+    function renderizarOutrasSecoes(secao, items) {
+      const destino = listas[secao];
+
+      if (!items.length) {
+        destino.innerHTML = `<div class="empty">Nenhum conteúdo encontrado.</div>`;
+        return;
+      }
+
+      destino.innerHTML = "";
+
+      items.forEach(item => {
+        let iconeSecao = "📌";
+        let nomeBonito = nomeSecao(item.secao);
+        if (secao === "eventos") iconeSecao = "📅";
+        if (secao === "projetos") iconeSecao = "📚";
+        if (secao === "comunidade") iconeSecao = "👨‍👩‍👧‍👦";
+
+        destino.innerHTML += `
+          <article class="card-conteudo secao-${secao} slide-up">
+            ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem do conteúdo")}
+            <div class="card-corpo">
+              <span class="tag-secao">${iconeSecao} ${nomeBonito}</span>
+              <h3 class="card-titulo">${escapeHtml(item.titulo)}</h3>
+              ${gerarMeta(item)}
+              <div class="card-resumo">${escapeHtml(extrairResumo(item.conteudo, 170))}</div>
+              ${gerarConteudoPublicacao(item)}
+              <div class="publicacao-assinatura">
+                <span class="publicacao-escola">Jornal Escolar • EEF Vereador Alfredo Scottini</span>
+                <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
+              </div>
+              ${gerarBotoesGestao(item)}
+            </div>
+          </article>
+        `;
+      });
+    }
+
+    function renderizarMiniNoticias(noticias) {
+      els.miniNoticias.innerHTML = "";
+      const destaques = noticias.slice(0, 5);
+
+      if (!destaques.length) {
+        els.miniNoticias.innerHTML = `<div class="mini-item"><small>Sem destaques no momento.</small></div>`;
+        return;
+      }
+
+      destaques.forEach(item => {
+        els.miniNoticias.innerHTML += `
+          <div class="mini-item">
+            <strong>${escapeHtml(item.titulo)}</strong>
+            <small>${escapeHtml(item.autor || "Não informado")} • ${escapeHtml(formatarData(item.data))}</small>
+          </div>
+        `;
+      });
+    }
+
+    function renderizarConteudos() {
+      Object.values(listas).forEach(el => el.innerHTML = "");
+
+      const termo = els.buscaConteudo.value.trim().toLowerCase();
+
+      const filtrados = state.todosAprovados.filter(item => {
+        if (!termo) return true;
+        return (
+          (item.titulo || "").toLowerCase().includes(termo) ||
+          stripHtml(item.conteudo || "").toLowerCase().includes(termo) ||
+          (item.autor || "").toLowerCase().includes(termo)
+        );
+      });
+
+      const noticias = filtrados.filter(item => item.secao === "noticias");
+      renderizarHomeDestaque(noticias);
+      renderizarNoticias(listas.noticias, noticias);
+      renderizarMiniNoticias(noticias);
+
+      ["eventos", "projetos", "comunidade"].forEach(secao => {
+        const items = filtrados.filter(item => item.secao === secao);
+        renderizarOutrasSecoes(secao, items);
+      });
+    }
+
+    function abrirPreview() {
+      const secao = document.getElementById("secaoConteudo").value;
+      const titulo = document.getElementById("titulo").value.trim();
+      const conteudoHtml = document.getElementById("conteudoEditor").innerHTML.trim();
+      const imagem = state.arquivoImagemAtual
+        ? (state.objectUrlAtual || URL.createObjectURL(state.arquivoImagemAtual))
+        : obterImagemFinalLocal();
+      const modoImagem = els.modoImagemSelect.value || "contain";
+
+      if (!titulo || !conteudoHtml || conteudoHtml === "<br>") {
+        showToast("Preencha o título e o conteúdo antes de visualizar.", "error");
+        return;
+      }
+
+      document.getElementById("previewSecao").textContent = nomeSecao(secao);
+      document.getElementById("previewSecaoMobile").textContent = nomeSecao(secao);
+      document.getElementById("previewTitulo").textContent = titulo;
+      document.getElementById("previewMeta").innerHTML = `
+        <span>Autor: ${escapeHtml(state.nomeUsuario || "Usuário")}</span>
+        <span>Tipo: ${escapeHtml(state.tipoUsuario || "usuário")}</span>
+        <span>Data: ${escapeHtml(formatarData(new Date()))}</span>
+      `;
+      document.getElementById("previewConteudo").innerHTML = sanitizeBasicHtml(conteudoHtml);
+
+      els.previewImagemAviso.classList.add("hidden");
+      if (imagem) {
+        els.previewImagem.src = imagem;
+        els.previewImagem.style.objectFit = modoImagem;
+        els.previewImagem.classList.remove("hidden");
+      } else {
+        els.previewImagem.src = "";
+        els.previewImagem.classList.add("hidden");
+      }
+
+      els.previewModal.classList.remove("hidden");
+    }
+
+    function fecharPreview() {
+      els.previewModal.classList.add("hidden");
+    }
+
+    function limparFormulario() {
+      document.getElementById("titulo").value = "";
+      els.conteudoEditor.innerHTML = "";
+      els.imagemInput.value = "";
+      els.imagemArquivo.value = "";
+      document.getElementById("secaoConteudo").value = "noticias";
+      els.modoImagemSelect.value = "contain";
+      els.formatBlockSelect.value = "";
+      els.fontSizeSelect.value = "";
+      state.arquivoImagemAtual = null;
+      state.imagemStoragePathAtual = "";
+      state.editandoId = null;
+      limparObjectUrl();
+      atualizarPreviewMiniatura();
+      atualizarEstadoToolbar();
+      els.statusEdicao.classList.add("hidden");
+      els.btnCancelarEdicao.classList.add("hidden");
+      document.getElementById("btnPostar").textContent = "Publicar";
+      esconderAvisoImagem();
+    }
+
+    function cancelarEdicao() {
+      limparFormulario();
+    }
+
+    async function cadastrar() {
+      try {
+        const nome = els.cadastroNome.value.trim();
+        const email = els.cadastroEmail.value.trim();
+        const senha = els.cadastroSenha.value.trim();
+        const tipo = els.cadastroTipo.value;
+
+        if (!nome || !email || !senha) {
+          showToast("Preencha nome, email e senha.", "error");
+          return;
+        }
+
+        if (senha.length < 6) {
+          showToast("A senha deve ter pelo menos 6 caracteres.", "error");
+          return;
+        }
+
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+
+        await setDoc(doc(db, "usuarios", cred.user.uid), {
+          nome,
+          email,
+          tipo
+        });
+
+        showToast("Cadastro feito com sucesso.", "success");
+        voltarLogin();
+        els.loginEmail.value = email;
+        els.loginSenha.value = "";
+      } catch (error) {
+        showToast(traduzirErroFirebase(error), "error");
+      }
+    }
+
+    async function login() {
+      try {
+        const email = els.loginEmail.value.trim();
+        const senha = els.loginSenha.value.trim();
+
+        if (!email || !senha) {
+          showToast("Preencha email e senha.", "error");
+          return;
+        }
+
+        await signInWithEmailAndPassword(auth, email, senha);
+        showToast("Login realizado com sucesso.", "success");
+        setOpenLateral(false, false);
+      } catch (error) {
+        showToast(traduzirErroFirebase(error), "error");
+      }
+    }
+
+    async function sair() {
+      try {
+        await signOut(auth);
+        showToast("Você saiu da conta.", "info");
+      } catch (error) {
+        showToast("Não foi possível sair da conta.", "error");
+      }
+    }
+
+    function traduzirErroFirebase(error) {
+      const codigo = error?.code || "";
+      const mapa = {
+        "auth/email-already-in-use": "Este email já está em uso.",
+        "auth/invalid-email": "Digite um email válido.",
+        "auth/weak-password": "A senha está muito fraca.",
+        "auth/invalid-credential": "Email ou senha incorretos.",
+        "auth/user-not-found": "Usuário não encontrado.",
+        "auth/wrong-password": "Senha incorreta.",
+        "permission-denied": "Você não tem permissão para fazer isso."
+      };
+      return mapa[codigo] || error?.message || "Ocorreu um erro.";
+    }
+
+    async function postarConteudo() {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          showToast("Faça login primeiro.", "error");
+          setOpenLateral(true, true);
+          return;
+        }
+
+        const secao = document.getElementById("secaoConteudo").value;
+        const titulo = document.getElementById("titulo").value.trim();
+        const conteudoHtml = document.getElementById("conteudoEditor").innerHTML.trim();
+        const modoImagem = els.modoImagemSelect.value || "contain";
+
+        if (!titulo || !conteudoHtml || conteudoHtml === "<br>") {
+          showToast("Preencha o título e o conteúdo.", "error");
+          return;
+        }
+
+        const conteudoSeguro = sanitizeBasicHtml(conteudoHtml);
+        if (!stripHtml(conteudoSeguro).trim()) {
+          showToast("O conteúdo ficou vazio após a limpeza do texto.", "error");
+          return;
+        }
+
+        const status = state.tipoUsuario === "professor" ? "aprovado" : "pendente";
+        const imagemUpload = await enviarImagemParaStorage(user);
+
+        if (state.editandoId) {
+          await updateDoc(doc(db, "conteudos", state.editandoId), {
+            secao,
+            titulo,
+            conteudo: conteudoSeguro,
+            imagem: imagemUpload.url,
+            imagemStoragePath: imagemUpload.storagePath,
+            modoImagem,
+            status,
+            atualizadoEm: serverTimestamp()
+          });
+
+          showToast("Conteúdo atualizado com sucesso.", "success");
+        } else {
+          await addDoc(collection(db, "conteudos"), {
+            secao,
+            titulo,
+            conteudo: conteudoSeguro,
+            imagem: imagemUpload.url,
+            imagemStoragePath: imagemUpload.storagePath,
+            modoImagem,
+            autor: state.nomeUsuario || user.email,
+            autorEmail: user.email,
+            tipoAutor: state.tipoUsuario,
+            status,
+            data: serverTimestamp(),
+            atualizadoEm: serverTimestamp()
+          });
+
+          showToast(
+            state.tipoUsuario === "professor"
+              ? "Conteúdo publicado com sucesso."
+              : "Conteúdo enviado para aprovação.",
+            "success"
+          );
+        }
+
+        limparFormulario();
+        fecharPreview();
+      } catch (error) {
+        showToast("Erro ao enviar conteúdo. Tente novamente.", "error");
+      }
+    }
+
+    function carregarConteudos() {
+      if (state.conteudosUnsubscribe) state.conteudosUnsubscribe();
+
+      const q = query(collection(db, "conteudos"), orderBy("data", "desc"));
+
+      state.conteudosUnsubscribe = onSnapshot(q, (snapshot) => {
+        state.todosAprovados = [];
+
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          if (item.status === "aprovado") {
+            state.todosAprovados.push({ ...item, id: docSnap.id });
+          }
+        });
+
+        debounceRender();
+      });
+    }
+
+    function carregarPendentes() {
+      if (state.pendentesUnsubscribe) state.pendentesUnsubscribe();
+
+      const q = query(collection(db, "conteudos"), where("status", "==", "pendente"));
+
+      state.pendentesUnsubscribe = onSnapshot(q, (snapshot) => {
+        const area = document.getElementById("lista-pendentes");
+        area.innerHTML = "";
+
+        snapshot.forEach((docSnap) => {
+          const item = docSnap.data();
+          const id = docSnap.id;
+
+          area.innerHTML += `
+            <article class="card-conteudo secao-${item.secao} slide-up" style="margin-bottom:18px;">
+              ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem do conteúdo")}
+              <div class="card-corpo">
+                <span class="badge-inline">${nomeSecao(item.secao)}</span>
+                <h3 class="card-titulo" style="font-size:24px;">${escapeHtml(item.titulo)}</h3>
+                ${gerarMeta(item)}
+                <div class="card-resumo">${escapeHtml(extrairResumo(item.conteudo, 170))}</div>
+                ${gerarConteudoPublicacao({ ...item, id })}
+                <div class="publicacao-assinatura">
+                  <span class="publicacao-escola">Aguardando aprovação • EEF Vereador Alfredo Scottini</span>
+                  <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
+                </div>
+                <div class="acoes">
+                  <button class="btn-success" onclick="window.aprovarConteudo('${id}')">Aprovar</button>
+                  <button class="btn-warning" onclick="window.editarConteudo('${id}', true)">Editar</button>
+                  <button class="btn-danger" onclick="window.excluirConteudo('${id}')">Excluir</button>
+                </div>
+              </div>
+            </article>
+          `;
+        });
+
+        if (!area.innerHTML) {
+          area.innerHTML = `<div class="empty">Não há conteúdos pendentes.</div>`;
+        }
+      });
+    }
+
+    window.aprovarConteudo = async function(id) {
+      try {
+        await updateDoc(doc(db, "conteudos", id), {
+          status: "aprovado",
+          atualizadoEm: serverTimestamp()
+        });
+        showToast("Conteúdo aprovado.", "success");
+      } catch {
+        showToast("Erro ao aprovar conteúdo.", "error");
+      }
+    };
+
+    window.excluirConteudo = async function(id) {
+      try {
+        const confirmar = confirm("Tem certeza que deseja apagar este conteúdo?");
+        if (!confirmar) return;
+        await deleteDoc(doc(db, "conteudos", id));
+        showToast("Conteúdo apagado.", "info");
+      } catch {
+        showToast("Erro ao excluir conteúdo.", "error");
+      }
+    };
+
+    window.editarConteudo = async function(id, vindoDosPendentes = false) {
+      try {
+        const snap = await getDoc(doc(db, "conteudos", id));
+        if (!snap.exists()) {
+          showToast("Conteúdo não encontrado.", "error");
+          return;
+        }
+
+        const item = snap.data();
+
+        if (!vindoDosPendentes && !usuarioPodeEditar({ ...item, id })) {
+          showToast("Você não tem permissão para editar este conteúdo.", "error");
+          return;
+        }
+
+        state.editandoId = id;
+        document.getElementById("secaoConteudo").value = item.secao || "noticias";
+        document.getElementById("titulo").value = item.titulo || "";
+        els.conteudoEditor.innerHTML = item.conteudo || "";
+        els.modoImagemSelect.value = item.modoImagem || "contain";
+        state.arquivoImagemAtual = null;
+        state.imagemStoragePathAtual = item.imagemStoragePath || "";
+        els.imagemArquivo.value = "";
+        els.imagemInput.value = item.imagem || "";
+
+        atualizarPreviewMiniatura();
+        els.statusEdicao.classList.remove("hidden");
+        els.btnCancelarEdicao.classList.remove("hidden");
+        document.getElementById("btnPostar").textContent = "Salvar";
+
+        document.getElementById("painelEnvio").classList.remove("hidden");
+        document.getElementById("painelPublicacao").classList.remove("hidden");
+        document.getElementById("painelPublicacao").scrollIntoView({ behavior: "smooth", block: "start" });
+
+        showToast("Conteúdo carregado para edição.", "info");
+      } catch {
+        showToast("Erro ao abrir o conteúdo para edição.", "error");
+      }
+    };
+
+    window.toggleExpandirConteudo = function(id) {
+      if (state.conteudosExpandidos.has(id)) {
+        state.conteudosExpandidos.delete(id);
+      } else {
+        state.conteudosExpandidos.add(id);
+      }
+      renderizarConteudos();
+    };
+
+    function mostrarSecao(secao) {
+      document.querySelectorAll(".page-section").forEach(el => el.classList.add("hidden"));
+      const target = document.getElementById("sec-" + secao);
+      if (target) {
+        target.classList.remove("hidden");
+        target.classList.add("fade-in");
+      }
+
+      els.navButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.section === secao);
+      });
+
+      if (isMobile()) {
+        els.navLeft.classList.remove("open");
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    window.mostrarSecao = mostrarSecao;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "usuarios", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const dados = userSnap.data();
+          state.nomeUsuario = dados.nome || user.email;
+          state.emailUsuario = user.email;
+          state.tipoUsuario = dados.tipo || "";
+        } else {
+          state.nomeUsuario = user.email;
+          state.emailUsuario = user.email;
+          state.tipoUsuario = "";
+        }
+
+        els.usuarioNome.textContent = state.nomeUsuario;
+        els.usuarioTipo.textContent = state.tipoUsuario || "usuário";
+        els.usuarioNomeDrawer.textContent = state.nomeUsuario;
+        els.usuarioTipoDrawer.textContent = state.tipoUsuario || "usuário";
+
+        atualizarAreaUsuarioLogado(true);
+
+        if (state.tipoUsuario === "professor" || state.tipoUsuario === "aluno") {
+          document.getElementById("painelEnvio").classList.remove("hidden");
+          document.getElementById("painelPublicacao").classList.remove("hidden");
+        } else {
+          document.getElementById("painelEnvio").classList.add("hidden");
+          document.getElementById("painelPublicacao").classList.add("hidden");
+        }
+
+        if (state.tipoUsuario === "professor") {
+          document.getElementById("painelEnvio").classList.remove("hidden");
+          document.getElementById("painelModeracao").classList.remove("hidden");
+          carregarPendentes();
+        } else {
+          document.getElementById("painelModeracao").classList.add("hidden");
+          document.getElementById("lista-pendentes").innerHTML = "";
+          if (state.pendentesUnsubscribe) {
+            state.pendentesUnsubscribe();
+            state.pendentesUnsubscribe = null;
+          }
+        }
+      } else {
+        state.nomeUsuario = "";
+        state.emailUsuario = "";
+        state.tipoUsuario = "";
+
+        els.usuarioNome.textContent = "";
+        els.usuarioTipo.textContent = "";
+        atualizarAreaUsuarioLogado(false);
+
+        document.getElementById("painelEnvio").classList.add("hidden");
+        document.getElementById("painelPublicacao").classList.add("hidden");
+        document.getElementById("painelModeracao").classList.add("hidden");
+        document.getElementById("lista-pendentes").innerHTML = "";
+
+        if (state.pendentesUnsubscribe) {
+          state.pendentesUnsubscribe();
+          state.pendentesUnsubscribe = null;
+        }
+
+        cancelarEdicao();
+      }
+
+      carregarConteudos();
+    });
+
+    els.navButtons.forEach(btn => {
+      btn.addEventListener("click", () => mostrarSecao(btn.dataset.section));
+    });
+
+    els.btnMenuMobile.addEventListener("click", () => {
+      els.navLeft.classList.toggle("open");
+    });
+
+    els.buscaConteudo.addEventListener("input", debounceRender);
+    document.getElementById("btnAbrirCadastro").addEventListener("click", abrirCadastro);
+    document.getElementById("btnVoltarLogin").addEventListener("click", voltarLogin);
+    document.getElementById("btnCadastrar").addEventListener("click", cadastrar);
+    document.getElementById("btnLogin").addEventListener("click", login);
+    document.getElementById("btnSair").addEventListener("click", sair);
+    document.getElementById("btnPostar").addEventListener("click", postarConteudo);
+    els.btnCancelarEdicao.addEventListener("click", cancelarEdicao);
+    els.btnPreview.addEventListener("click", abrirPreview);
+    document.getElementById("btnFecharPreview").addEventListener("click", fecharPreview);
+
+    els.toolbarButtons.forEach(btn => {
+      btn.addEventListener("click", () => executarComando(btn.dataset.command));
+    });
+
+    els.formatBlockSelect.addEventListener("change", () => {
+      if (!els.formatBlockSelect.value) return;
+      focarEditor();
+      document.execCommand("formatBlock", false, els.formatBlockSelect.value);
+      atualizarEstadoToolbar();
+    });
+
+    els.fontSizeSelect.addEventListener("change", () => {
+      if (!els.fontSizeSelect.value) return;
+      focarEditor();
+      document.execCommand("fontSize", false, els.fontSizeSelect.value);
+      atualizarEstadoToolbar();
+    });
+
+    els.textColorPicker.addEventListener("input", () => {
+      focarEditor();
+      document.execCommand("foreColor", false, els.textColorPicker.value);
+      atualizarEstadoToolbar();
+    });
+
+    els.highlightColorPicker.addEventListener("input", () => {
+      focarEditor();
+      document.execCommand("hiliteColor", false, els.highlightColorPicker.value);
+      atualizarEstadoToolbar();
+    });
+
+    els.btnCriarLink.addEventListener("click", () => {
+      focarEditor();
+      const url = prompt("Digite o link completo:");
+      if (!url) return;
+      const valor = url.trim();
+      const seguro = valor.startsWith("http://") || valor.startsWith("https://") || valor.startsWith("mailto:");
+      if (!seguro) {
+        showToast("Use um link começando com http://, https:// ou mailto:.", "error");
+        return;
+      }
+      document.execCommand("createLink", false, valor);
+      atualizarEstadoToolbar();
+    });
+
+    els.conteudoEditor.addEventListener("keyup", atualizarEstadoToolbar);
+    els.conteudoEditor.addEventListener("mouseup", atualizarEstadoToolbar);
+    els.conteudoEditor.addEventListener("input", atualizarEstadoToolbar);
+
+    document.addEventListener("selectionchange", () => {
+      const selection = window.getSelection();
+      if (
+        document.activeElement === els.conteudoEditor ||
+        (selection && selection.anchorNode && els.conteudoEditor.contains(selection.anchorNode))
+      ) {
+        atualizarEstadoToolbar();
+      }
+    });
+
+    els.conteudoEditor.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "b") {
+        event.preventDefault();
+        executarComando("bold");
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "i") {
+        event.preventDefault();
+        executarComando("italic");
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "u") {
+        event.preventDefault();
+        executarComando("underline");
+      }
+    });
+
+    els.imagemArquivo.addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        showToast("Selecione uma imagem válida.", "error");
+        els.imagemArquivo.value = "";
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("A imagem deve ter no máximo 5 MB.", "error");
+        els.imagemArquivo.value = "";
+        return;
+      }
+
+      state.arquivoImagemAtual = file;
+      els.imagemInput.value = "";
+      atualizarPreviewMiniatura();
+    });
+
+    els.imagemInput.addEventListener("input", () => {
+      if (els.imagemInput.value.trim()) {
+        state.arquivoImagemAtual = null;
+        els.imagemArquivo.value = "";
+      }
+      atualizarPreviewMiniatura();
+    });
+
+    els.btnRemoverImagem.addEventListener("click", () => {
+      state.arquivoImagemAtual = null;
+      els.imagemInput.value = "";
+      els.imagemArquivo.value = "";
+      atualizarPreviewMiniatura();
+    });
+
+    els.modoImagemSelect.addEventListener("change", atualizarPreviewMiniatura);
+
+    els.previewThumb.addEventListener("error", () => {
+      mostrarAvisoImagem("Não foi possível carregar a imagem dessa prévia.");
+      els.previewThumbWrap.classList.remove("hidden");
+    });
+
+    els.previewThumb.addEventListener("load", esconderAvisoImagem);
+
+    els.previewImagem.addEventListener("error", () => {
+      els.previewImagem.classList.add("hidden");
+      els.previewImagemAviso.textContent = "A imagem da prévia não pôde ser carregada.";
+      els.previewImagemAviso.classList.remove("hidden");
+    });
+
+    els.previewImagem.addEventListener("load", () => {
+      els.previewImagemAviso.classList.add("hidden");
+    });
+
+    els.previewModal.addEventListener("click", (event) => {
+      if (event.target === els.previewModal) fecharPreview();
+    });
+
+    iniciarAbaLateral();
+    mostrarSecao("inicio");
+    atualizarEstadoToolbar();
+    atualizarPreviewMiniatura();
+  </script>
+</body>
+</html>
