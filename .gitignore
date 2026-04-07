@@ -67,3 +67,9 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+git add.
+git commit -m "teste"
+git push
+git rm --cached *.lnk
+git commit -m "Removendo atalhos desnecessários"
+git push
