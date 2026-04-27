@@ -1734,6 +1734,7 @@ body {
         <div class="aba-item" data-go="eventos">Eventos</div>
         <div class="aba-item" data-go="projetos">Projetos</div>
         <div class="aba-item" data-go="comunidade">Comunidade Escolar</div>
+        <div id="atalhoAreaLogada" class="aba-item hidden" data-go="painelEnvio">Área logada</div>
       </div>
 
       <div class="drawer-divider"></div>
@@ -1821,6 +1822,7 @@ body {
         <button class="nav-btn" data-section="eventos">Eventos</button>
         <button class="nav-btn" data-section="projetos">Projetos</button>
         <button class="nav-btn" data-section="comunidade">Comunidade Escolar</button>
+        <button id="btnAreaLogada" class="nav-btn hidden" data-section="painelEnvio">Área logada</button>
       </div>
 
       <div class="nav-right">
@@ -1930,7 +1932,7 @@ body {
         <div id="lista-comunidade" class="cards"></div>
       </section>
 
-      <section id="painelEnvio" class="hidden section">
+      <section id="painelEnvio" class="page-section hidden section">
         <div id="painelPublicacao" class="panel hidden">
           <h2 class="section-title">Publicar conteúdo</h2>
           <p class="muted">Escolha a parte do site, escreva e veja antes de publicar.</p>
@@ -2210,7 +2212,9 @@ body {
       usuarioNome: document.getElementById("usuarioNome"),
       usuarioTipo: document.getElementById("usuarioTipo"),
       usuarioNomeDrawer: document.getElementById("usuarioNomeDrawer"),
-      usuarioTipoDrawer: document.getElementById("usuarioTipoDrawer")
+      usuarioTipoDrawer: document.getElementById("usuarioTipoDrawer"),
+      btnAreaLogada: document.getElementById("btnAreaLogada"),
+      atalhoAreaLogada: document.getElementById("atalhoAreaLogada")
     };
 
     const listas = {
@@ -2323,6 +2327,9 @@ body {
       els.usuarioTipo.classList.toggle("hidden", !logado);
       els.drawerUsuarioCard.classList.toggle("hidden", !logado);
 
+      if (els.btnAreaLogada) els.btnAreaLogada.classList.toggle("hidden", !logado);
+      if (els.atalhoAreaLogada) els.atalhoAreaLogada.classList.toggle("hidden", !logado);
+
       if (logado) {
         els.drawerLoginCard.classList.add("hidden");
         els.drawerCadastroCard.classList.add("hidden");
@@ -2330,6 +2337,50 @@ body {
         els.drawerUsuarioCard.classList.add("hidden");
         els.drawerCadastroCard.classList.add("hidden");
         els.drawerLoginCard.classList.remove("hidden");
+      }
+    }
+
+    function normalizarTipoUsuario(tipo) {
+      return String(tipo || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function usuarioLogado() {
+      return !!auth.currentUser;
+    }
+
+    function usuarioPodePublicar() {
+      return usuarioLogado();
+    }
+
+    function usuarioPodeModerar() {
+      return normalizarTipoUsuario(state.tipoUsuario) === "professor";
+    }
+
+    function atualizarPaineisLogados() {
+      const podePublicar = usuarioPodePublicar();
+      const podeModerar = usuarioPodeModerar();
+
+      const painelEnvio = document.getElementById("painelEnvio");
+      const painelPublicacao = document.getElementById("painelPublicacao");
+      const painelModeracao = document.getElementById("painelModeracao");
+      const listaPendentes = document.getElementById("lista-pendentes");
+
+      painelEnvio.classList.toggle("hidden", !podePublicar);
+      painelPublicacao.classList.toggle("hidden", !podePublicar);
+      painelModeracao.classList.toggle("hidden", !podeModerar);
+
+      if (podeModerar) {
+        carregarPendentes();
+      } else {
+        listaPendentes.innerHTML = "";
+        if (state.pendentesUnsubscribe) {
+          state.pendentesUnsubscribe();
+          state.pendentesUnsubscribe = null;
+        }
       }
     }
 
@@ -2906,9 +2957,9 @@ body {
     async function cadastrar() {
       try {
         const nome = els.cadastroNome.value.trim();
-        const email = els.cadastroEmail.value.trim();
+        const email = els.cadastroEmail.value.trim().toLowerCase();
         const senha = els.cadastroSenha.value.trim();
-        const tipo = els.cadastroTipo.value;
+        const tipo = normalizarTipoUsuario(els.cadastroTipo.value || "usuario");
 
         if (!nome || !email || !senha) {
           showToast("Preencha nome, email e senha.", "error");
@@ -2923,23 +2974,32 @@ body {
         const cred = await createUserWithEmailAndPassword(auth, email, senha);
 
         await setDoc(doc(db, "usuarios", cred.user.uid), {
-          nome,
-          email,
-          tipo
-        });
+          nome: nome,
+          email: email,
+          tipo: tipo,
+          criadoEm: serverTimestamp()
+        }, { merge: true });
 
-        showToast("Cadastro feito com sucesso.", "success");
-        voltarLogin();
-        els.loginEmail.value = email;
-        els.loginSenha.value = "";
+        state.nomeUsuario = nome;
+        state.emailUsuario = email;
+        state.tipoUsuario = tipo;
+
+        els.cadastroNome.value = "";
+        els.cadastroEmail.value = "";
+        els.cadastroSenha.value = "";
+
+        showToast("Cadastro feito com sucesso. Você já está logado.", "success");
+        setOpenLateral(false, false);
+        mostrarSecao("painelEnvio");
       } catch (error) {
+        console.error("Erro no cadastro:", error);
         showToast(traduzirErroFirebase(error), "error");
       }
     }
 
     async function login() {
       try {
-        const email = els.loginEmail.value.trim();
+        const email = els.loginEmail.value.trim().toLowerCase();
         const senha = els.loginSenha.value.trim();
 
         if (!email || !senha) {
@@ -2948,9 +3008,13 @@ body {
         }
 
         await signInWithEmailAndPassword(auth, email, senha);
+
+        els.loginSenha.value = "";
         showToast("Login realizado com sucesso.", "success");
         setOpenLateral(false, false);
+        mostrarSecao("painelEnvio");
       } catch (error) {
+        console.error("Erro no login:", error);
         showToast(traduzirErroFirebase(error), "error");
       }
     }
@@ -2973,6 +3037,9 @@ body {
         "auth/invalid-credential": "Email ou senha incorretos.",
         "auth/user-not-found": "Usuário não encontrado.",
         "auth/wrong-password": "Senha incorreta.",
+        "auth/missing-password": "Digite a senha.",
+        "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde.",
+        "auth/network-request-failed": "Erro de conexão. Verifique sua internet.",
         "permission-denied": "Você não tem permissão para fazer isso."
       };
       return mapa[codigo] || error?.message || "Ocorreu um erro.";
@@ -3003,7 +3070,7 @@ body {
           return;
         }
 
-        const status = state.tipoUsuario === "professor" ? "aprovado" : "pendente";
+        const status = usuarioPodeModerar() ? "aprovado" : "pendente";
         const imagemUpload = await enviarImagemParaStorage(user);
 
         if (state.editandoId) {
@@ -3036,7 +3103,7 @@ body {
           });
 
           showToast(
-            state.tipoUsuario === "professor"
+            usuarioPodeModerar()
               ? "Conteúdo publicado com sucesso."
               : "Conteúdo enviado para aprovação.",
             "success"
@@ -3184,11 +3251,13 @@ body {
     };
 
     function mostrarSecao(secao) {
-      document.querySelectorAll(".page-section").forEach(el => el.classList.add("hidden"));
-      const target = document.getElementById("sec-" + secao);
-      if (target) {
-        target.classList.remove("hidden");
-        target.classList.add("fade-in");
+      document.querySelectorAll(".page-section").forEach(section => {
+        section.classList.add("hidden");
+      });
+
+      const alvo = document.getElementById(`sec-${secao}`) || document.getElementById(secao);
+      if (alvo) {
+        alvo.classList.remove("hidden");
       }
 
       els.navButtons.forEach(btn => {
@@ -3206,18 +3275,31 @@ body {
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userRef = doc(db, "usuarios", user.uid);
-        const userSnap = await getDoc(userRef);
+        state.emailUsuario = user.email || "";
 
-        if (userSnap.exists()) {
-          const dados = userSnap.data();
-          state.nomeUsuario = dados.nome || user.email;
-          state.emailUsuario = user.email;
-          state.tipoUsuario = dados.tipo || "";
-        } else {
-          state.nomeUsuario = user.email;
-          state.emailUsuario = user.email;
-          state.tipoUsuario = "";
+        try {
+          const userRef = doc(db, "usuarios", user.uid);
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const dados = userSnap.data();
+            state.nomeUsuario = dados.nome || user.displayName || user.email || "Usuário";
+            state.tipoUsuario = normalizarTipoUsuario(dados.tipo || "usuario");
+          } else {
+            state.nomeUsuario = user.displayName || user.email || "Usuário";
+            state.tipoUsuario = "usuario";
+
+            await setDoc(userRef, {
+              nome: state.nomeUsuario,
+              email: state.emailUsuario,
+              tipo: state.tipoUsuario,
+              criadoEm: serverTimestamp()
+            }, { merge: true });
+          }
+        } catch (error) {
+          console.warn("Não foi possível carregar o perfil do usuário:", error);
+          state.nomeUsuario = user.displayName || user.email || "Usuário";
+          state.tipoUsuario = "usuario";
         }
 
         els.usuarioNome.textContent = state.nomeUsuario;
@@ -3226,27 +3308,7 @@ body {
         els.usuarioTipoDrawer.textContent = state.tipoUsuario || "usuário";
 
         atualizarAreaUsuarioLogado(true);
-
-        if (state.tipoUsuario === "professor" || state.tipoUsuario === "aluno") {
-          document.getElementById("painelEnvio").classList.remove("hidden");
-          document.getElementById("painelPublicacao").classList.remove("hidden");
-        } else {
-          document.getElementById("painelEnvio").classList.add("hidden");
-          document.getElementById("painelPublicacao").classList.add("hidden");
-        }
-
-        if (state.tipoUsuario === "professor") {
-          document.getElementById("painelEnvio").classList.remove("hidden");
-          document.getElementById("painelModeracao").classList.remove("hidden");
-          carregarPendentes();
-        } else {
-          document.getElementById("painelModeracao").classList.add("hidden");
-          document.getElementById("lista-pendentes").innerHTML = "";
-          if (state.pendentesUnsubscribe) {
-            state.pendentesUnsubscribe();
-            state.pendentesUnsubscribe = null;
-          }
-        }
+        atualizarPaineisLogados();
       } else {
         state.nomeUsuario = "";
         state.emailUsuario = "";
@@ -3254,6 +3316,9 @@ body {
 
         els.usuarioNome.textContent = "";
         els.usuarioTipo.textContent = "";
+        els.usuarioNomeDrawer.textContent = "Usuário";
+        els.usuarioTipoDrawer.textContent = "Perfil";
+
         atualizarAreaUsuarioLogado(false);
 
         document.getElementById("painelEnvio").classList.add("hidden");
