@@ -2102,67 +2102,30 @@ body {
     </div>
   </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      onSnapshot,
-      doc,
-      setDoc,
-      getDoc,
-      updateDoc,
-      deleteDoc,
-      query,
-      where,
-      orderBy,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+  <script>
+    /*
+      Sistema simples para projeto escolar, sem Firebase.
+      Perfis:
+      - Professor: publica direto, aprova, edita e exclui postagens.
+      - Aluno: envia postagens para aprovação.
+      - Pais: visualizam e comentam.
+      Observação: os dados ficam no navegador usando localStorage.
+    */
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBxHU3ufYbXbzgVRzHgg1s-8YWwed-Kx_g",
-      authDomain: "jornal-escolar-4ce0a.firebaseapp.com",
-      projectId: "jornal-escolar-4ce0a",
-      storageBucket: "jornal-escolar-4ce0a.firebasestorage.app",
-      messagingSenderId: "232691710435",
-      appId: "1:232691710435:web:b0091834f29ef8aba908d6",
-      measurementId: "G-EVJ556PD0R"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+    const STORAGE_USUARIOS = "jornalEscolarUsuariosV2";
+    const STORAGE_SESSAO = "jornalEscolarSessaoV2";
+    const STORAGE_CONTEUDOS = "jornalEscolarConteudosV2";
+    const STORAGE_COMENTARIOS = "jornalEscolarComentariosV2";
 
     const state = {
-      tipoUsuario: "",
-      nomeUsuario: "",
-      emailUsuario: "",
-      conteudosUnsubscribe: null,
-      pendentesUnsubscribe: null,
+      usuario: null,
+      todosConteudos: [],
       todosAprovados: [],
       editandoId: null,
       arquivoImagemAtual: null,
-      imagemStoragePathAtual: "",
       objectUrlAtual: null,
-      searchTimer: null,
-      renderTimer: null,
-      lateralPinada: false,
       lateralAberta: false,
+      lateralPinada: false,
       conteudosExpandidos: new Set()
     };
 
@@ -2176,324 +2139,115 @@ body {
       abaLateral: document.getElementById("abaLateral"),
       abaGatilho: document.getElementById("abaGatilho"),
       buscaConteudo: document.getElementById("buscaConteudo"),
-      conteudoEditor: document.getElementById("conteudoEditor"),
-      toolbarButtons: document.querySelectorAll(".tool-btn[data-command]"),
-      formatBlockSelect: document.getElementById("formatBlockSelect"),
-      fontSizeSelect: document.getElementById("fontSizeSelect"),
-      textColorPicker: document.getElementById("textColorPicker"),
-      highlightColorPicker: document.getElementById("highlightColorPicker"),
-      btnCriarLink: document.getElementById("btnCriarLink"),
-      imagemArquivo: document.getElementById("imagemArquivo"),
-      imagemInput: document.getElementById("imagem"),
-      modoImagemSelect: document.getElementById("modoImagem"),
-      previewThumb: document.getElementById("previewThumb"),
-      previewThumbWrap: document.getElementById("previewThumbWrap"),
-      previewThumbText: document.getElementById("previewThumbText"),
-      previewThumbAviso: document.getElementById("previewThumbAviso"),
-      btnRemoverImagem: document.getElementById("btnRemoverImagem"),
-      statusEdicao: document.getElementById("statusEdicao"),
-      btnCancelarEdicao: document.getElementById("btnCancelarEdicao"),
-      btnPreview: document.getElementById("btnPreview"),
-      homeDestaqueArea: document.getElementById("homeDestaqueArea"),
-      toastArea: document.getElementById("toastArea"),
-      previewModal: document.getElementById("previewModal"),
-      previewImagem: document.getElementById("previewImagem"),
-      previewImagemAviso: document.getElementById("previewImagemAviso"),
-      miniNoticias: document.getElementById("miniNoticias"),
+
+      drawerLoginCard: document.getElementById("drawerLoginCard"),
+      drawerCadastroCard: document.getElementById("drawerCadastroCard"),
+      drawerUsuarioCard: document.getElementById("drawerUsuarioCard"),
+      btnLogin: document.getElementById("btnLogin"),
+      btnAbrirCadastro: document.getElementById("btnAbrirCadastro"),
+      btnCadastrar: document.getElementById("btnCadastrar"),
+      btnVoltarLogin: document.getElementById("btnVoltarLogin"),
+      btnSair: document.getElementById("btnSair"),
+
       loginEmail: document.getElementById("loginEmail"),
       loginSenha: document.getElementById("loginSenha"),
       cadastroNome: document.getElementById("cadastroNome"),
       cadastroEmail: document.getElementById("cadastroEmail"),
       cadastroSenha: document.getElementById("cadastroSenha"),
       cadastroTipo: document.getElementById("cadastroTipo"),
-      drawerLoginCard: document.getElementById("drawerLoginCard"),
-      drawerCadastroCard: document.getElementById("drawerCadastroCard"),
-      drawerUsuarioCard: document.getElementById("drawerUsuarioCard"),
+
       usuarioNome: document.getElementById("usuarioNome"),
       usuarioTipo: document.getElementById("usuarioTipo"),
       usuarioNomeDrawer: document.getElementById("usuarioNomeDrawer"),
       usuarioTipoDrawer: document.getElementById("usuarioTipoDrawer"),
       btnAreaLogada: document.getElementById("btnAreaLogada"),
-      atalhoAreaLogada: document.getElementById("atalhoAreaLogada")
+      atalhoAreaLogada: document.getElementById("atalhoAreaLogada"),
+
+      painelPublicacao: document.getElementById("painelPublicacao"),
+      painelModeracao: document.getElementById("painelModeracao"),
+      listaPendentes: document.getElementById("lista-pendentes"),
+      secaoConteudo: document.getElementById("secaoConteudo"),
+      titulo: document.getElementById("titulo"),
+      imagemInput: document.getElementById("imagem"),
+      imagemArquivo: document.getElementById("imagemArquivo"),
+      modoImagemSelect: document.getElementById("modoImagem"),
+      conteudoEditor: document.getElementById("conteudoEditor"),
+      statusEdicao: document.getElementById("statusEdicao"),
+      btnPreview: document.getElementById("btnPreview"),
+      btnPostar: document.getElementById("btnPostar"),
+      btnCancelarEdicao: document.getElementById("btnCancelarEdicao"),
+      btnRemoverImagem: document.getElementById("btnRemoverImagem"),
+
+      previewThumbWrap: document.getElementById("previewThumbWrap"),
+      previewThumb: document.getElementById("previewThumb"),
+      previewThumbText: document.getElementById("previewThumbText"),
+      previewThumbAviso: document.getElementById("previewThumbAviso"),
+
+      previewModal: document.getElementById("previewModal"),
+      btnFecharPreview: document.getElementById("btnFecharPreview"),
+      previewSecaoMobile: document.getElementById("previewSecaoMobile"),
+      previewSecao: document.getElementById("previewSecao"),
+      previewTitulo: document.getElementById("previewTitulo"),
+      previewMeta: document.getElementById("previewMeta"),
+      previewImagem: document.getElementById("previewImagem"),
+      previewImagemAviso: document.getElementById("previewImagemAviso"),
+      previewConteudo: document.getElementById("previewConteudo"),
+
+      miniNoticias: document.getElementById("miniNoticias"),
+      homeDestaqueArea: document.getElementById("homeDestaqueArea"),
+      toastArea: document.getElementById("toastArea"),
+
+      toolbarButtons: document.querySelectorAll(".tool-btn[data-command]"),
+      formatBlockSelect: document.getElementById("formatBlockSelect"),
+      fontSizeSelect: document.getElementById("fontSizeSelect"),
+      textColorPicker: document.getElementById("textColorPicker"),
+      highlightColorPicker: document.getElementById("highlightColorPicker"),
+      btnCriarLink: document.getElementById("btnCriarLink")
     };
 
-    const listas = {
-      noticias: document.getElementById("lista-noticias"),
-      eventos: document.getElementById("lista-eventos"),
-      projetos: document.getElementById("lista-projetos"),
-      comunidade: document.getElementById("lista-comunidade")
-    };
-
-    function isMobile() {
-      return window.matchMedia("(max-width: 760px)").matches;
+    function uid() {
+      return "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
     }
 
-    function showToast(message, type = "info") {
-      const toast = document.createElement("div");
-      toast.className = `toast ${type}`;
-      toast.textContent = message;
-      els.toastArea.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.transform = "translateY(8px)";
-        setTimeout(() => toast.remove(), 220);
-      }, 2600);
-    }
-
-    function setOpenLateral(open, pin = false) {
-      state.lateralAberta = open;
-      state.lateralPinada = pin;
-      els.abaLateral.classList.toggle("open", open);
-      els.abaLateral.classList.toggle("pinada", pin);
-      els.drawerOverlay.classList.toggle("open", open && (pin || isMobile()));
-    }
-
-    function toggleLateralPinned() {
-      if (state.lateralAberta && state.lateralPinada) {
-        setOpenLateral(false, false);
-      } else {
-        setOpenLateral(true, true);
+    function lerJSON(chave, padrao) {
+      try {
+        const valor = localStorage.getItem(chave);
+        return valor ? JSON.parse(valor) : padrao;
+      } catch {
+        return padrao;
       }
     }
 
-    function fecharLateralSePossivel() {
-      if (state.lateralPinada) return;
-      setOpenLateral(false, false);
+    function salvarJSON(chave, valor) {
+      localStorage.setItem(chave, JSON.stringify(valor));
     }
 
-    function iniciarAbaLateral() {
-      const gatilhoDesktopEnter = () => {
-        if (!isMobile() && !state.lateralPinada) setOpenLateral(true, false);
-      };
-      const gatilhoDesktopLeave = () => {
-        if (!isMobile() && !state.lateralPinada) setOpenLateral(false, false);
-      };
-
-      els.abaGatilho.addEventListener("mouseenter", gatilhoDesktopEnter);
-      els.abaLateral.addEventListener("mouseenter", gatilhoDesktopEnter);
-      els.abaLateral.addEventListener("mouseleave", gatilhoDesktopLeave);
-
-      els.abaGatilho.addEventListener("click", () => {
-        if (isMobile()) {
-          setOpenLateral(!state.lateralAberta, true);
-        } else {
-          toggleLateralPinned();
-        }
-      });
-
-      els.btnAbrirLateralTopo.addEventListener("click", () => setOpenLateral(true, true));
-      els.btnAbrirLateralNav.addEventListener("click", () => setOpenLateral(true, true));
-      els.drawerOverlay.addEventListener("click", () => setOpenLateral(false, false));
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          setOpenLateral(false, false);
-          fecharPreview();
-        }
-      });
-
-      document.querySelectorAll(".aba-item[data-go]").forEach(item => {
-        item.addEventListener("click", () => {
-          mostrarSecao(item.dataset.go);
-          if (isMobile()) setOpenLateral(false, false);
+    function garantirProfessorPadrao() {
+      const usuarios = lerJSON(STORAGE_USUARIOS, []);
+      const existe = usuarios.some(u => String(u.email).toLowerCase() === "professor@escola.com");
+      if (!existe) {
+        usuarios.push({
+          id: uid(),
+          nome: "Professor",
+          email: "professor@escola.com",
+          senha: "123456",
+          tipo: "professor"
         });
-      });
-
-      window.addEventListener("resize", () => {
-        if (!isMobile()) {
-          els.navLeft.classList.remove("open");
-          els.drawerOverlay.classList.remove("open");
-          if (!state.lateralPinada && !state.lateralAberta) {
-            setOpenLateral(false, false);
-          }
-        }
-      });
-    }
-
-    function abrirCadastro() {
-      els.drawerLoginCard.classList.add("hidden");
-      els.drawerCadastroCard.classList.remove("hidden");
-      setOpenLateral(true, true);
-    }
-
-    function voltarLogin() {
-      els.drawerCadastroCard.classList.add("hidden");
-      els.drawerLoginCard.classList.remove("hidden");
-    }
-
-    function atualizarAreaUsuarioLogado(logado) {
-      els.usuarioNome.classList.toggle("hidden", !logado);
-      els.usuarioTipo.classList.toggle("hidden", !logado);
-      els.drawerUsuarioCard.classList.toggle("hidden", !logado);
-
-      if (els.btnAreaLogada) els.btnAreaLogada.classList.toggle("hidden", !logado);
-      if (els.atalhoAreaLogada) els.atalhoAreaLogada.classList.toggle("hidden", !logado);
-
-      if (logado) {
-        els.drawerLoginCard.classList.add("hidden");
-        els.drawerCadastroCard.classList.add("hidden");
-      } else {
-        els.drawerUsuarioCard.classList.add("hidden");
-        els.drawerCadastroCard.classList.add("hidden");
-        els.drawerLoginCard.classList.remove("hidden");
+        salvarJSON(STORAGE_USUARIOS, usuarios);
       }
     }
 
-    function normalizarTipoUsuario(tipo) {
-      return String(tipo || "")
-        .trim()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+    function escapeHtml(texto = "") {
+      return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
-    function usuarioLogado() {
-      return !!auth.currentUser;
-    }
-
-    function usuarioPodePublicar() {
-      return usuarioLogado();
-    }
-
-    function usuarioPodeModerar() {
-      return normalizarTipoUsuario(state.tipoUsuario) === "professor";
-    }
-
-    function atualizarPaineisLogados() {
-      const podePublicar = usuarioPodePublicar();
-      const podeModerar = usuarioPodeModerar();
-
-      const painelEnvio = document.getElementById("painelEnvio");
-      const painelPublicacao = document.getElementById("painelPublicacao");
-      const painelModeracao = document.getElementById("painelModeracao");
-      const listaPendentes = document.getElementById("lista-pendentes");
-
-      painelEnvio.classList.toggle("hidden", !podePublicar);
-      painelPublicacao.classList.toggle("hidden", !podePublicar);
-      painelModeracao.classList.toggle("hidden", !podeModerar);
-
-      if (podeModerar) {
-        carregarPendentes();
-      } else {
-        listaPendentes.innerHTML = "";
-        if (state.pendentesUnsubscribe) {
-          state.pendentesUnsubscribe();
-          state.pendentesUnsubscribe = null;
-        }
-      }
-    }
-
-    function focarEditor() {
-      els.conteudoEditor.focus();
-    }
-
-    function executarComando(command) {
-      focarEditor();
-      document.execCommand(command, false, null);
-      atualizarEstadoToolbar();
-    }
-
-    function atualizarEstadoToolbar() {
-      const comandosEstado = [
-        "bold",
-        "italic",
-        "underline",
-        "strikeThrough",
-        "insertUnorderedList",
-        "insertOrderedList",
-        "justifyLeft",
-        "justifyCenter",
-        "justifyRight"
-      ];
-
-      els.toolbarButtons.forEach(btn => {
-        const cmd = btn.dataset.command;
-        if (comandosEstado.includes(cmd)) {
-          let ativo = false;
-          try {
-            ativo = document.queryCommandState(cmd);
-          } catch {
-            ativo = false;
-          }
-          btn.classList.toggle("active", ativo);
-        }
-      });
-    }
-
-    function debounceRender() {
-      clearTimeout(state.searchTimer);
-      state.searchTimer = setTimeout(() => {
-        cancelAnimationFrame(state.renderTimer);
-        state.renderTimer = requestAnimationFrame(renderizarConteudos);
-      }, 220);
-    }
-
-    function limparObjectUrl() {
-      if (state.objectUrlAtual) {
-        URL.revokeObjectURL(state.objectUrlAtual);
-        state.objectUrlAtual = null;
-      }
-    }
-
-    function obterImagemFinalLocal() {
-      return els.imagemInput.value.trim() || "";
-    }
-
-    function esconderAvisoImagem() {
-      els.previewThumbAviso.classList.add("hidden");
-      els.previewThumbAviso.textContent = "";
-    }
-
-    function mostrarAvisoImagem(msg) {
-      els.previewThumbAviso.textContent = msg;
-      els.previewThumbAviso.classList.remove("hidden");
-    }
-
-    function atualizarPreviewMiniatura() {
-      limparObjectUrl();
-      esconderAvisoImagem();
-
-      if (state.arquivoImagemAtual) {
-        state.objectUrlAtual = URL.createObjectURL(state.arquivoImagemAtual);
-        els.previewThumb.src = state.objectUrlAtual;
-        els.previewThumb.style.objectFit = els.modoImagemSelect.value || "contain";
-        els.previewThumbWrap.classList.remove("hidden");
-        els.btnRemoverImagem.classList.remove("hidden");
-        els.previewThumbText.textContent = "Prévia da imagem enviada";
-        return;
-      }
-
-      const imagem = obterImagemFinalLocal();
-      if (imagem) {
-        els.previewThumb.src = imagem;
-        els.previewThumb.style.objectFit = els.modoImagemSelect.value || "contain";
-        els.previewThumbWrap.classList.remove("hidden");
-        els.btnRemoverImagem.classList.remove("hidden");
-        els.previewThumbText.textContent = "Prévia da imagem pelo link";
-      } else {
-        els.previewThumb.src = "";
-        els.previewThumbWrap.classList.add("hidden");
-        els.btnRemoverImagem.classList.add("hidden");
-      }
-    }
-
-    async function enviarImagemParaStorage(user) {
-      if (!state.arquivoImagemAtual) {
-        return {
-          url: els.imagemInput.value.trim() || "",
-          storagePath: state.imagemStoragePathAtual || ""
-        };
-      }
-
-      const extensao = state.arquivoImagemAtual.name.split(".").pop() || "jpg";
-      const nomeArquivo = `conteudos/${user.uid}/${Date.now()}.${extensao}`;
-      const storageRef = ref(storage, nomeArquivo);
-
-      await uploadBytes(storageRef, state.arquivoImagemAtual);
-      const url = await getDownloadURL(storageRef);
-
-      return { url, storagePath: nomeArquivo };
+    function escapeAttribute(texto = "") {
+      return escapeHtml(texto).replaceAll("`", "&#096;");
     }
 
     function nomeSecao(secao) {
@@ -2503,422 +2257,702 @@ body {
         projetos: "Projetos",
         comunidade: "Comunidade Escolar"
       };
-      return nomes[secao] || secao;
+      return nomes[secao] || "Publicação";
     }
 
-    function escapeHtml(text) {
-      return String(text ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function escapeAttribute(text) {
-      return String(text ?? "").replaceAll('"', "&quot;");
-    }
-
-    function stripHtml(html) {
-      const temp = document.createElement("div");
-      temp.innerHTML = html;
-      return temp.textContent || temp.innerText || "";
-    }
-
-    function extrairResumo(html, limite = 220) {
-      const texto = stripHtml(html).trim();
-      if (!texto) return "";
-      if (texto.length <= limite) return texto;
-      return texto.slice(0, limite).trim() + "...";
+    function nomeTipo(tipo) {
+      const nomes = {
+        professor: "Professor",
+        aluno: "Aluno",
+        pais: "Pais"
+      };
+      return nomes[tipo] || "Usuário";
     }
 
     function formatarData(data) {
-      if (!data) return "Data não informada";
+      if (!data) return "Sem data";
+      const d = new Date(data);
+      if (Number.isNaN(d.getTime())) return "Sem data";
+      return d.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
 
-      try {
-        let dataObj = null;
+    function textoSemTags(html = "") {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.textContent || div.innerText || "";
+    }
 
-        if (typeof data.toDate === "function") {
-          dataObj = data.toDate();
-        } else if (data instanceof Date) {
-          dataObj = data;
-        } else {
-          dataObj = new Date(data);
-        }
+    function extrairResumo(html = "", limite = 180) {
+      const texto = textoSemTags(html).trim();
+      if (texto.length <= limite) return texto || "Sem resumo.";
+      return texto.slice(0, limite).trim() + "...";
+    }
 
-        if (Number.isNaN(dataObj.getTime())) return "Data não informada";
+    function showToast(mensagem, tipo = "info") {
+      if (!els.toastArea) {
+        alert(mensagem);
+        return;
+      }
+      const toast = document.createElement("div");
+      toast.className = `toast ${tipo}`;
+      toast.textContent = mensagem;
+      els.toastArea.appendChild(toast);
+      setTimeout(() => toast.remove(), 3200);
+    }
 
-        return new Intl.DateTimeFormat("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric"
-        }).format(dataObj);
-      } catch {
-        return "Data não informada";
+    function abrirLateral(pinada = false) {
+      state.lateralAberta = true;
+      state.lateralPinada = pinada || state.lateralPinada;
+      els.abaLateral?.classList.add("open");
+      els.drawerOverlay?.classList.add("open");
+      if (state.lateralPinada) els.abaLateral?.classList.add("pinada");
+    }
+
+    function fecharLateral() {
+      if (state.lateralPinada) return;
+      state.lateralAberta = false;
+      els.abaLateral?.classList.remove("open");
+      els.drawerOverlay?.classList.remove("open");
+    }
+
+    function alternarLateral(pinada = false) {
+      if (state.lateralAberta && !pinada) {
+        state.lateralPinada = false;
+        els.abaLateral?.classList.remove("pinada");
+        fecharLateral();
+      } else {
+        abrirLateral(pinada);
       }
     }
 
-    function sanitizeInlineStyle(styleText) {
-      const allowed = [
-        "color",
-        "background-color",
-        "text-align",
-        "font-size",
-        "font-weight",
-        "font-style",
-        "text-decoration"
-      ];
-
-      const temp = document.createElement("span");
-      temp.setAttribute("style", styleText);
-
-      const safeStyles = [];
-      for (const prop of allowed) {
-        const value = temp.style.getPropertyValue(prop);
-        if (!value) continue;
-
-        const lower = value.toLowerCase();
-        if (
-          lower.includes("url(") ||
-          lower.includes("expression(") ||
-          lower.includes("javascript:") ||
-          lower.includes("fixed") ||
-          lower.includes("absolute")
-        ) {
-          continue;
-        }
-
-        safeStyles.push(`${prop}:${value}`);
-      }
-
-      return safeStyles.join("; ");
-    }
-
-    function sanitizeBasicHtml(html) {
-      const permitido = new Set([
-        "B", "I", "U", "S", "P", "BR", "H1", "H2", "H3", "H4",
-        "UL", "OL", "LI", "BLOCKQUOTE", "A", "SPAN", "STRONG", "EM"
-      ]);
-
-      const temp = document.createElement("div");
-      temp.innerHTML = String(html);
-
-      const elementos = [...temp.querySelectorAll("*")];
-
-      elementos.forEach(el => {
-        if (!permitido.has(el.tagName)) {
-          const fragment = document.createDocumentFragment();
-          while (el.firstChild) fragment.appendChild(el.firstChild);
-          el.replaceWith(fragment);
-          return;
-        }
-
-        [...el.attributes].forEach(attr => {
-          const nome = attr.name.toLowerCase();
-
-          if (nome.startsWith("on")) {
-            el.removeAttribute(attr.name);
-            return;
-          }
-
-          if (nome === "href") {
-            const href = attr.value.trim();
-            const hrefLower = href.toLowerCase();
-            const seguro = hrefLower.startsWith("http://") || hrefLower.startsWith("https://") || hrefLower.startsWith("mailto:");
-
-            if (!seguro) {
-              el.removeAttribute("href");
-            } else {
-              el.setAttribute("href", href);
-              el.setAttribute("target", "_blank");
-              el.setAttribute("rel", "noopener noreferrer");
-            }
-            return;
-          }
-
-          if (nome === "style") {
-            const styleSeguro = sanitizeInlineStyle(attr.value);
-            if (styleSeguro) {
-              el.setAttribute("style", styleSeguro);
-            } else {
-              el.removeAttribute("style");
-            }
-            return;
-          }
-
-          el.removeAttribute(attr.name);
-        });
+    function mostrarSecao(secao) {
+      document.querySelectorAll(".page-section").forEach(section => {
+        section.classList.add("hidden");
       });
 
-      return temp.innerHTML.trim();
+      const id = secao === "painelEnvio" ? "painelEnvio" : `sec-${secao}`;
+      const alvo = document.getElementById(id);
+
+      if (secao === "painelEnvio" && !state.usuario) {
+        showToast("Faça login para acessar esta área.", "error");
+        abrirLateral();
+        return;
+      }
+
+      if (alvo) {
+        alvo.classList.remove("hidden");
+        alvo.classList.add("fade-in");
+      }
+
+      els.navButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.section === secao);
+      });
+
+      if (window.innerWidth <= 760) {
+        els.navLeft?.classList.remove("open");
+      }
+
+      if (secao === "painelEnvio") atualizarAreaLogada();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function usuarioPodeEditar(item) {
-      if (!auth.currentUser) return false;
-      return state.tipoUsuario === "professor" || item.autorEmail === auth.currentUser.email;
+    window.mostrarSecao = mostrarSecao;
+
+    function usuarioEhProfessor() {
+      return state.usuario?.tipo === "professor";
     }
 
-    function gerarBlocoImagem(imagem, classe, modoImagem, alt) {
-      if (!imagem) return "";
-      return `<img class="${classe}" loading="lazy" style="object-fit:${escapeAttribute(modoImagem || "contain")}" src="${escapeAttribute(imagem)}" alt="${escapeAttribute(alt)}" onerror="this.style.display='none'">`;
+    function usuarioEhAluno() {
+      return state.usuario?.tipo === "aluno";
+    }
+
+    function usuarioEhPais() {
+      return state.usuario?.tipo === "pais";
+    }
+
+    function podePublicar() {
+      return usuarioEhProfessor() || usuarioEhAluno();
+    }
+
+    function podeModerar() {
+      return usuarioEhProfessor();
+    }
+
+    function carregarConteudosLocal() {
+      state.todosConteudos = lerJSON(STORAGE_CONTEUDOS, []);
+      state.todosConteudos.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
+      state.todosAprovados = state.todosConteudos.filter(item => item.status === "aprovado");
+      renderizarTudo();
+    }
+
+    function salvarConteudosLocal() {
+      salvarJSON(STORAGE_CONTEUDOS, state.todosConteudos);
+      carregarConteudosLocal();
+    }
+
+    function carregarComentarios() {
+      return lerJSON(STORAGE_COMENTARIOS, {});
+    }
+
+    function salvarComentarios(comentarios) {
+      salvarJSON(STORAGE_COMENTARIOS, comentarios);
+    }
+
+    function gerarBlocoImagem(src, classe, modo = "contain", alt = "Imagem da publicação") {
+      if (!src) return "";
+      const fit = modo === "cover" ? "cover" : "contain";
+      return `<img src="${escapeAttribute(src)}" class="${classe}" alt="${escapeAttribute(alt)}" style="object-fit:${fit};">`;
     }
 
     function gerarMeta(item) {
       return `
         <div class="card-meta">
-          <span>Autor: ${escapeHtml(item.autor || "Não informado")}</span>
-          <span>Perfil: ${escapeHtml(item.tipoAutor || "")}</span>
-          <span>Data: ${escapeHtml(formatarData(item.data))}</span>
+          <span>${escapeHtml(nomeSecao(item.secao))}</span>
+          <span>${escapeHtml(formatarData(item.data))}</span>
+          <span>${escapeHtml(item.autor || "Jornal Escolar")}</span>
         </div>
       `;
     }
 
-    function precisaExpandir(html) {
-      return stripHtml(html).trim().length > 380;
+    function gerarConteudoPublicacao(item) {
+      const expandido = state.conteudosExpandidos.has(item.id);
+      return `
+        <div id="conteudo-${escapeAttribute(item.id)}" class="card-texto conteudo-colapsavel ${expandido ? "expandido" : ""}">
+          ${item.conteudo || ""}
+        </div>
+        <div class="acoes">
+          <button class="btn-outline" onclick="window.alternarConteudo('${escapeAttribute(item.id)}')">
+            ${expandido ? "Mostrar menos" : "Ler mais"}
+          </button>
+        </div>
+      `;
     }
 
-    function gerarConteudoPublicacao(item, classeExtra = "") {
-      const expandido = state.conteudosExpandidos.has(item.id);
-      const precisa = precisaExpandir(item.conteudo || "");
-      const conteudoSeguro = sanitizeBasicHtml(item.conteudo || "");
+    function gerarComentarios(item) {
+      const comentarios = carregarComentarios();
+      const lista = comentarios[item.id] || [];
+      const podeComentar = state.usuario && (usuarioEhPais() || usuarioEhProfessor());
+
+      const itens = lista.map(coment => `
+        <div class="mini-item">
+          <strong>${escapeHtml(coment.autor || "Comentário")}</strong>
+          <small>${escapeHtml(formatarData(coment.data))}</small>
+          <p style="margin:8px 0 0;color:#334155;line-height:1.5;">${escapeHtml(coment.texto)}</p>
+        </div>
+      `).join("");
 
       return `
-        <div class="card-texto conteudo-colapsavel ${expandido ? "expandido" : ""} ${classeExtra}" id="conteudo-${escapeAttribute(item.id)}">
-          ${conteudoSeguro}
-        </div>
-        ${precisa ? `
-          <div class="acoes" style="margin-top:12px;">
-            <button class="btn-outline" onclick="window.toggleExpandirConteudo('${item.id}')">
-              ${expandido ? "Mostrar menos" : "Ler conteúdo completo"}
-            </button>
+        <div class="drawer-card" style="margin-top:16px;">
+          <h3>Comentários</h3>
+          <div class="mini-list" id="comentarios-${escapeAttribute(item.id)}">
+            ${itens || `<div class="empty">Ainda não há comentários.</div>`}
           </div>
-        ` : ""}
-      `;
-    }
-
-    function gerarBotoesGestao(item) {
-      const podeEditar = usuarioPodeEditar(item);
-      const botaoEditar = podeEditar
-        ? `<button class="btn-warning" onclick="window.editarConteudo('${item.id}')">Editar</button>`
-        : "";
-
-      const botaoExcluir = state.tipoUsuario === "professor"
-        ? `<button class="btn-danger" onclick="window.excluirConteudo('${item.id}')">Apagar</button>`
-        : "";
-
-      if (!botaoEditar && !botaoExcluir) return "";
-      return `<div class="acoes">${botaoEditar}${botaoExcluir}</div>`;
-    }
-
-    function renderizarHomeDestaque(itemsNoticias) {
-      if (!itemsNoticias.length) {
-        els.homeDestaqueArea.innerHTML = `
-          <div class="empty">
-            Ainda não há notícia aprovada para aparecer em destaque.
-          </div>
-        `;
-        return;
-      }
-
-      const destaque = itemsNoticias[0];
-      const resumo = extrairResumo(destaque.conteudo, 260);
-
-      els.homeDestaqueArea.innerHTML = `
-        <article class="home-destaque slide-up">
-          ${gerarBlocoImagem(destaque.imagem, "home-destaque-imagem", destaque.modoImagem, "Destaque escolar")}
-          <div class="home-destaque-corpo">
-            <span class="home-selo">🏫 Destaque da escola</span>
-            <h3 class="home-destaque-titulo">${escapeHtml(destaque.titulo)}</h3>
-
-            <div class="home-destaque-meta">
-              <span>Autor: ${escapeHtml(destaque.autor || "Não informado")}</span>
-              <span>Perfil: ${escapeHtml(destaque.tipoAutor || "")}</span>
-              <span>Data: ${escapeHtml(formatarData(destaque.data))}</span>
-            </div>
-
-            <div class="home-destaque-resumo">${escapeHtml(resumo)}</div>
-
-            <div class="publicacao-assinatura">
-              <span class="publicacao-escola">Jornal Escolar • EEF Vereador Alfredo Scottini</span>
-              <span class="publicacao-data">Em destaque</span>
-            </div>
-
-            <div class="acoes">
-              <button class="btn-primary" onclick="mostrarSecao('noticias')">Ir para notícias</button>
-            </div>
-          </div>
-        </article>
-      `;
-    }
-
-    function renderizarNoticias(destino, items) {
-      if (!items.length) {
-        destino.innerHTML = `<div class="empty">Nenhuma notícia encontrada.</div>`;
-        return;
-      }
-
-      const [destaque, ...restantes] = items;
-      destino.innerHTML = `
-        <article class="noticia-destaque slide-up">
-          ${gerarBlocoImagem(destaque.imagem, "destaque-imagem", destaque.modoImagem, "Imagem da notícia principal")}
-          <div class="destaque-corpo">
-            <span class="destaque-label">⭐ Notícia em destaque</span>
-            <h3 class="destaque-titulo">${escapeHtml(destaque.titulo)}</h3>
-            <div class="destaque-meta">
-              <span class="meta-pill">Autor: ${escapeHtml(destaque.autor || "Não informado")}</span>
-              <span class="meta-pill">Perfil: ${escapeHtml(destaque.tipoAutor || "")}</span>
-              <span class="meta-pill">Data: ${escapeHtml(formatarData(destaque.data))}</span>
-            </div>
-            <div class="destaque-resumo">${escapeHtml(extrairResumo(destaque.conteudo, 260))}</div>
-            ${gerarConteudoPublicacao(destaque)}
-            <div class="publicacao-assinatura">
-              <span class="publicacao-escola">Jornal Escolar • EEF Vereador Alfredo Scottini</span>
-              <span class="publicacao-data">Publicação da escola</span>
-            </div>
-            ${gerarBotoesGestao(destaque)}
-          </div>
-        </article>
-      `;
-
-      if (restantes.length) {
-        const grid = document.createElement("div");
-        grid.className = "noticias-grid";
-        destino.appendChild(grid);
-
-        restantes.forEach(item => {
-          grid.innerHTML += `
-            <article class="card-conteudo secao-noticias slide-up">
-              ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem da notícia")}
-              <div class="card-corpo">
-                <span class="tag-secao">📰 Notícias</span>
-                <h3 class="card-titulo">${escapeHtml(item.titulo)}</h3>
-                ${gerarMeta(item)}
-                <div class="card-resumo">${escapeHtml(extrairResumo(item.conteudo, 170))}</div>
-                ${gerarConteudoPublicacao(item)}
-                <div class="publicacao-assinatura">
-                  <span class="publicacao-escola">EEF Vereador Alfredo Scottini</span>
-                  <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
+          ${
+            podeComentar
+              ? `
+                <div style="margin-top:12px;">
+                  <input id="comentario-input-${escapeAttribute(item.id)}" placeholder="Escreva um comentário..." />
+                  <button class="btn-primary" onclick="window.adicionarComentario('${escapeAttribute(item.id)}')">Comentar</button>
                 </div>
-                ${gerarBotoesGestao(item)}
-              </div>
-            </article>
-          `;
-        });
-      }
+              `
+              : `<p class="muted" style="margin-top:10px;">Pais e professores podem comentar após o login.</p>`
+          }
+        </div>
+      `;
     }
 
-    function renderizarOutrasSecoes(secao, items) {
-      const destino = listas[secao];
+    function gerarAcoesProfessor(item, pendente = false) {
+      if (!usuarioEhProfessor()) return "";
+      return `
+        <div class="acoes">
+          ${pendente ? `<button class="btn-success" onclick="window.aprovarConteudo('${escapeAttribute(item.id)}')">Aprovar</button>` : ""}
+          <button class="btn-warning" onclick="window.editarConteudo('${escapeAttribute(item.id)}')">Editar</button>
+          <button class="btn-danger" onclick="window.excluirConteudo('${escapeAttribute(item.id)}')">Excluir</button>
+        </div>
+      `;
+    }
 
-      if (!items.length) {
-        destino.innerHTML = `<div class="empty">Nenhum conteúdo encontrado.</div>`;
+    function gerarCard(item, destaque = false) {
+      const classeExtra = `secao-${escapeAttribute(item.secao || "noticias")}`;
+      const corpo = `
+        <span class="tag-secao">${escapeHtml(nomeSecao(item.secao))}</span>
+        <h3 class="${destaque ? "destaque-titulo" : "card-titulo"}">${escapeHtml(item.titulo)}</h3>
+        ${gerarMeta(item)}
+        <div class="${destaque ? "destaque-resumo" : "card-resumo"}">${escapeHtml(extrairResumo(item.conteudo, destaque ? 240 : 180))}</div>
+        ${gerarConteudoPublicacao(item)}
+        <div class="publicacao-assinatura">
+          <span class="publicacao-escola">Publicado no Jornal Escolar • EEF Vereador Alfredo Scottini</span>
+          <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
+        </div>
+        ${gerarAcoesProfessor(item, false)}
+        ${gerarComentarios(item)}
+      `;
+
+      if (destaque) {
+        return `
+          <article class="home-destaque slide-up">
+            ${gerarBlocoImagem(item.imagem, "home-destaque-imagem", item.modoImagem, "Imagem de destaque")}
+            <div class="home-destaque-corpo">${corpo}</div>
+          </article>
+        `;
+      }
+
+      return `
+        <article class="card-conteudo ${classeExtra} slide-up">
+          ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem do conteúdo")}
+          <div class="card-corpo">${corpo}</div>
+        </article>
+      `;
+    }
+
+    function renderizarTudo() {
+      const termo = (els.buscaConteudo?.value || "").toLowerCase().trim();
+      const filtrados = state.todosAprovados.filter(item => {
+        if (!termo) return true;
+        const base = `${item.titulo || ""} ${textoSemTags(item.conteudo || "")} ${nomeSecao(item.secao)} ${item.autor || ""}`.toLowerCase();
+        return base.includes(termo);
+      });
+
+      ["noticias", "eventos", "projetos", "comunidade"].forEach(secao => {
+        const area = document.getElementById(`lista-${secao}`);
+        if (!area) return;
+        const itens = filtrados.filter(item => item.secao === secao);
+        area.innerHTML = itens.length
+          ? itens.map(item => gerarCard(item)).join("")
+          : `<div class="empty">Nenhuma publicação encontrada nesta seção.</div>`;
+      });
+
+      renderizarHome(filtrados);
+      renderizarMiniNoticias();
+      renderizarPendentes();
+    }
+
+    function renderizarHome(lista = state.todosAprovados) {
+      if (!els.homeDestaqueArea) return;
+      const primeiro = lista[0];
+      els.homeDestaqueArea.innerHTML = primeiro
+        ? gerarCard(primeiro, true)
+        : `<div class="empty">Ainda não há publicações. Entre como professor ou aluno para criar a primeira postagem.</div>`;
+    }
+
+    function renderizarMiniNoticias() {
+      if (!els.miniNoticias) return;
+      const ultimas = state.todosAprovados.slice(0, 4);
+      els.miniNoticias.innerHTML = ultimas.length
+        ? ultimas.map(item => `
+          <div class="mini-item" onclick="mostrarSecao('${escapeAttribute(item.secao)}')">
+            <strong>${escapeHtml(item.titulo)}</strong>
+            <small>${escapeHtml(nomeSecao(item.secao))} • ${escapeHtml(formatarData(item.data))}</small>
+          </div>
+        `).join("")
+        : `<div class="empty">Sem destaques ainda.</div>`;
+    }
+
+    function renderizarPendentes() {
+      if (!els.listaPendentes) return;
+      if (!usuarioEhProfessor()) {
+        els.listaPendentes.innerHTML = "";
         return;
       }
 
-      destino.innerHTML = "";
-
-      items.forEach(item => {
-        let iconeSecao = "📌";
-        let nomeBonito = nomeSecao(item.secao);
-        if (secao === "eventos") iconeSecao = "📅";
-        if (secao === "projetos") iconeSecao = "📚";
-        if (secao === "comunidade") iconeSecao = "👨‍👩‍👧‍👦";
-
-        destino.innerHTML += `
-          <article class="card-conteudo secao-${secao} slide-up">
+      const pendentes = state.todosConteudos.filter(item => item.status === "pendente");
+      els.listaPendentes.innerHTML = pendentes.length
+        ? pendentes.map(item => `
+          <article class="card-conteudo secao-${escapeAttribute(item.secao)} slide-up" style="margin-bottom:18px;">
             ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem do conteúdo")}
             <div class="card-corpo">
-              <span class="tag-secao">${iconeSecao} ${nomeBonito}</span>
-              <h3 class="card-titulo">${escapeHtml(item.titulo)}</h3>
+              <span class="badge-inline">${escapeHtml(nomeSecao(item.secao))}</span>
+              <h3 class="card-titulo" style="font-size:24px;">${escapeHtml(item.titulo)}</h3>
               ${gerarMeta(item)}
               <div class="card-resumo">${escapeHtml(extrairResumo(item.conteudo, 170))}</div>
               ${gerarConteudoPublicacao(item)}
               <div class="publicacao-assinatura">
-                <span class="publicacao-escola">Jornal Escolar • EEF Vereador Alfredo Scottini</span>
+                <span class="publicacao-escola">Aguardando aprovação • EEF Vereador Alfredo Scottini</span>
                 <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
               </div>
-              ${gerarBotoesGestao(item)}
+              ${gerarAcoesProfessor(item, true)}
             </div>
           </article>
-        `;
-      });
+        `).join("")
+        : `<div class="empty">Não há conteúdos pendentes.</div>`;
     }
 
-    function renderizarMiniNoticias(noticias) {
-      els.miniNoticias.innerHTML = "";
-      const destaques = noticias.slice(0, 5);
+    window.alternarConteudo = function(id) {
+      if (state.conteudosExpandidos.has(id)) {
+        state.conteudosExpandidos.delete(id);
+      } else {
+        state.conteudosExpandidos.add(id);
+      }
+      renderizarTudo();
+    };
 
-      if (!destaques.length) {
-        els.miniNoticias.innerHTML = `<div class="mini-item"><small>Sem destaques no momento.</small></div>`;
+    window.adicionarComentario = function(id) {
+      if (!state.usuario || !(usuarioEhPais() || usuarioEhProfessor())) {
+        showToast("Apenas pais e professores podem comentar.", "error");
         return;
       }
 
-      destaques.forEach(item => {
-        els.miniNoticias.innerHTML += `
-          <div class="mini-item">
-            <strong>${escapeHtml(item.titulo)}</strong>
-            <small>${escapeHtml(item.autor || "Não informado")} • ${escapeHtml(formatarData(item.data))}</small>
-          </div>
-        `;
+      const input = document.getElementById(`comentario-input-${id}`);
+      const texto = input?.value?.trim();
+      if (!texto) {
+        showToast("Escreva um comentário antes de enviar.", "error");
+        return;
+      }
+
+      const comentarios = carregarComentarios();
+      if (!comentarios[id]) comentarios[id] = [];
+      comentarios[id].push({
+        id: uid(),
+        texto,
+        autor: state.usuario.nome,
+        email: state.usuario.email,
+        tipo: state.usuario.tipo,
+        data: new Date().toISOString()
+      });
+
+      salvarComentarios(comentarios);
+      showToast("Comentário publicado.", "success");
+      renderizarTudo();
+    };
+
+    window.aprovarConteudo = function(id) {
+      if (!usuarioEhProfessor()) {
+        showToast("Apenas professores podem aprovar conteúdos.", "error");
+        return;
+      }
+      const item = state.todosConteudos.find(p => p.id === id);
+      if (!item) return;
+      item.status = "aprovado";
+      item.atualizadoEm = new Date().toISOString();
+      salvarConteudosLocal();
+      showToast("Conteúdo aprovado.", "success");
+    };
+
+    window.excluirConteudo = function(id) {
+      if (!usuarioEhProfessor()) {
+        showToast("Apenas professores podem excluir postagens.", "error");
+        return;
+      }
+
+      const confirmar = confirm("Tem certeza que deseja excluir esta postagem?");
+      if (!confirmar) return;
+
+      state.todosConteudos = state.todosConteudos.filter(item => item.id !== id);
+
+      const comentarios = carregarComentarios();
+      delete comentarios[id];
+      salvarComentarios(comentarios);
+
+      if (state.editandoId === id) limparFormulario();
+      salvarConteudosLocal();
+      showToast("Postagem excluída.", "info");
+    };
+
+    window.editarConteudo = function(id) {
+      if (!usuarioEhProfessor()) {
+        showToast("Apenas professores podem editar postagens.", "error");
+        return;
+      }
+
+      const item = state.todosConteudos.find(p => p.id === id);
+      if (!item) {
+        showToast("Postagem não encontrada.", "error");
+        return;
+      }
+
+      state.editandoId = id;
+      els.secaoConteudo.value = item.secao || "noticias";
+      els.titulo.value = item.titulo || "";
+      els.imagemInput.value = item.imagem || "";
+      els.modoImagemSelect.value = item.modoImagem || "contain";
+      els.conteudoEditor.innerHTML = item.conteudo || "";
+      state.arquivoImagemAtual = null;
+
+      atualizarPreviewMiniatura();
+      els.statusEdicao?.classList.remove("hidden");
+      els.btnCancelarEdicao?.classList.remove("hidden");
+      els.btnPostar.textContent = "Salvar edição";
+
+      mostrarSecao("painelEnvio");
+      showToast("Modo de edição ativado.", "info");
+    };
+
+    function atualizarAreaLogada() {
+      const logado = !!state.usuario;
+
+      els.btnAreaLogada?.classList.toggle("hidden", !logado);
+      els.atalhoAreaLogada?.classList.toggle("hidden", !logado);
+
+      els.drawerLoginCard?.classList.toggle("hidden", logado);
+      els.drawerCadastroCard?.classList.add("hidden");
+      els.drawerUsuarioCard?.classList.toggle("hidden", !logado);
+
+      if (logado) {
+        els.usuarioNome?.classList.remove("hidden");
+        els.usuarioTipo?.classList.remove("hidden");
+        els.usuarioNome.textContent = state.usuario.nome;
+        els.usuarioTipo.textContent = nomeTipo(state.usuario.tipo);
+        els.usuarioNomeDrawer.textContent = state.usuario.nome;
+        els.usuarioTipoDrawer.textContent = nomeTipo(state.usuario.tipo);
+
+        els.painelPublicacao?.classList.toggle("hidden", !podePublicar());
+        els.painelModeracao?.classList.toggle("hidden", !podeModerar());
+
+        if (usuarioEhPais()) {
+          els.painelPublicacao?.classList.add("hidden");
+          els.painelModeracao?.classList.add("hidden");
+        }
+      } else {
+        els.usuarioNome?.classList.add("hidden");
+        els.usuarioTipo?.classList.add("hidden");
+        els.painelPublicacao?.classList.add("hidden");
+        els.painelModeracao?.classList.add("hidden");
+      }
+
+      renderizarTudo();
+    }
+
+    function login() {
+      const email = (els.loginEmail?.value || "").trim().toLowerCase();
+      const senha = els.loginSenha?.value || "";
+      const usuarios = lerJSON(STORAGE_USUARIOS, []);
+
+      const usuario = usuarios.find(u => String(u.email).toLowerCase() === email && u.senha === senha);
+
+      if (!usuario) {
+        showToast("Email ou senha incorretos.", "error");
+        return;
+      }
+
+      state.usuario = usuario;
+      salvarJSON(STORAGE_SESSAO, usuario.id);
+      els.loginSenha.value = "";
+      atualizarAreaLogada();
+      abrirLateral();
+      showToast(`Bem-vindo(a), ${usuario.nome}!`, "success");
+    }
+
+    function cadastrar() {
+      const nome = (els.cadastroNome?.value || "").trim();
+      const email = (els.cadastroEmail?.value || "").trim().toLowerCase();
+      const senha = els.cadastroSenha?.value || "";
+      const tipo = els.cadastroTipo?.value || "aluno";
+
+      if (!nome || !email || !senha) {
+        showToast("Preencha nome, email e senha.", "error");
+        return;
+      }
+
+      const usuarios = lerJSON(STORAGE_USUARIOS, []);
+      if (usuarios.some(u => String(u.email).toLowerCase() === email)) {
+        showToast("Este email já está cadastrado.", "error");
+        return;
+      }
+
+      const novo = { id: uid(), nome, email, senha, tipo };
+      usuarios.push(novo);
+      salvarJSON(STORAGE_USUARIOS, usuarios);
+
+      state.usuario = novo;
+      salvarJSON(STORAGE_SESSAO, novo.id);
+
+      els.cadastroNome.value = "";
+      els.cadastroEmail.value = "";
+      els.cadastroSenha.value = "";
+
+      atualizarAreaLogada();
+      showToast("Cadastro criado com sucesso.", "success");
+    }
+
+    function sair() {
+      state.usuario = null;
+      localStorage.removeItem(STORAGE_SESSAO);
+      limparFormulario();
+      atualizarAreaLogada();
+      mostrarSecao("inicio");
+      showToast("Você saiu da conta.", "info");
+    }
+
+    function restaurarSessao() {
+      const id = lerJSON(STORAGE_SESSAO, null);
+      const usuarios = lerJSON(STORAGE_USUARIOS, []);
+      state.usuario = usuarios.find(u => u.id === id) || null;
+      atualizarAreaLogada();
+    }
+
+    function arquivoParaDataURL(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve("");
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
     }
 
-    function renderizarConteudos() {
-      Object.values(listas).forEach(el => el.innerHTML = "");
+    async function publicarConteudo() {
+      if (!state.usuario) {
+        showToast("Faça login para publicar.", "error");
+        abrirLateral();
+        return;
+      }
 
-      const termo = els.buscaConteudo.value.trim().toLowerCase();
+      if (!podePublicar()) {
+        showToast("Pais podem comentar, mas não publicar postagens.", "error");
+        return;
+      }
 
-      const filtrados = state.todosAprovados.filter(item => {
-        if (!termo) return true;
-        return (
-          (item.titulo || "").toLowerCase().includes(termo) ||
-          stripHtml(item.conteudo || "").toLowerCase().includes(termo) ||
-          (item.autor || "").toLowerCase().includes(termo)
-        );
+      const secao = els.secaoConteudo.value;
+      const titulo = els.titulo.value.trim();
+      const conteudo = els.conteudoEditor.innerHTML.trim();
+      const modoImagem = els.modoImagemSelect.value || "contain";
+
+      if (!titulo || !textoSemTags(conteudo).trim()) {
+        showToast("Preencha o título e o conteúdo.", "error");
+        return;
+      }
+
+      let imagem = els.imagemInput.value.trim();
+
+      if (state.arquivoImagemAtual) {
+        try {
+          imagem = await arquivoParaDataURL(state.arquivoImagemAtual);
+        } catch {
+          showToast("Erro ao carregar imagem.", "error");
+          return;
+        }
+      }
+
+      if (state.editandoId) {
+        if (!usuarioEhProfessor()) {
+          showToast("Apenas professores podem salvar edições.", "error");
+          return;
+        }
+
+        const item = state.todosConteudos.find(p => p.id === state.editandoId);
+        if (!item) {
+          showToast("Postagem não encontrada.", "error");
+          limparFormulario();
+          return;
+        }
+
+        item.secao = secao;
+        item.titulo = titulo;
+        item.conteudo = conteudo;
+        item.imagem = imagem;
+        item.modoImagem = modoImagem;
+        item.atualizadoEm = new Date().toISOString();
+
+        salvarConteudosLocal();
+        limparFormulario();
+        showToast("Postagem editada com sucesso.", "success");
+        return;
+      }
+
+      const status = usuarioEhProfessor() ? "aprovado" : "pendente";
+
+      state.todosConteudos.unshift({
+        id: uid(),
+        secao,
+        titulo,
+        conteudo,
+        imagem,
+        modoImagem,
+        autor: state.usuario.nome,
+        autorEmail: state.usuario.email,
+        tipoAutor: state.usuario.tipo,
+        status,
+        data: new Date().toISOString(),
+        atualizadoEm: new Date().toISOString()
       });
 
-      const noticias = filtrados.filter(item => item.secao === "noticias");
-      renderizarHomeDestaque(noticias);
-      renderizarNoticias(listas.noticias, noticias);
-      renderizarMiniNoticias(noticias);
+      salvarConteudosLocal();
+      limparFormulario();
 
-      ["eventos", "projetos", "comunidade"].forEach(secao => {
-        const items = filtrados.filter(item => item.secao === secao);
-        renderizarOutrasSecoes(secao, items);
-      });
+      showToast(
+        usuarioEhProfessor()
+          ? "Conteúdo publicado com sucesso."
+          : "Conteúdo enviado para aprovação do professor.",
+        "success"
+      );
+    }
+
+    function limparFormulario() {
+      state.editandoId = null;
+      state.arquivoImagemAtual = null;
+
+      if (state.objectUrlAtual) {
+        URL.revokeObjectURL(state.objectUrlAtual);
+        state.objectUrlAtual = null;
+      }
+
+      if (els.titulo) els.titulo.value = "";
+      if (els.imagemInput) els.imagemInput.value = "";
+      if (els.imagemArquivo) els.imagemArquivo.value = "";
+      if (els.conteudoEditor) els.conteudoEditor.innerHTML = "";
+      if (els.modoImagemSelect) els.modoImagemSelect.value = "contain";
+
+      els.statusEdicao?.classList.add("hidden");
+      els.btnCancelarEdicao?.classList.add("hidden");
+      if (els.btnPostar) els.btnPostar.textContent = "Publicar";
+
+      atualizarPreviewMiniatura();
+    }
+
+    function atualizarPreviewMiniatura() {
+      const link = els.imagemInput?.value?.trim();
+      const arquivo = state.arquivoImagemAtual;
+
+      if (state.objectUrlAtual) {
+        URL.revokeObjectURL(state.objectUrlAtual);
+        state.objectUrlAtual = null;
+      }
+
+      let src = link;
+      if (arquivo) {
+        state.objectUrlAtual = URL.createObjectURL(arquivo);
+        src = state.objectUrlAtual;
+      }
+
+      if (src) {
+        els.previewThumbWrap?.classList.remove("hidden");
+        els.previewThumb.src = src;
+        els.previewThumbText.textContent = arquivo ? arquivo.name : "Imagem por link";
+        els.btnRemoverImagem?.classList.remove("hidden");
+      } else {
+        els.previewThumbWrap?.classList.add("hidden");
+        els.previewThumb.removeAttribute("src");
+        els.btnRemoverImagem?.classList.add("hidden");
+      }
     }
 
     function abrirPreview() {
-      const secao = document.getElementById("secaoConteudo").value;
-      const titulo = document.getElementById("titulo").value.trim();
-      const conteudoHtml = document.getElementById("conteudoEditor").innerHTML.trim();
-      const imagem = state.arquivoImagemAtual
-        ? (state.objectUrlAtual || URL.createObjectURL(state.arquivoImagemAtual))
-        : obterImagemFinalLocal();
-      const modoImagem = els.modoImagemSelect.value || "contain";
+      const titulo = els.titulo.value.trim() || "Título da publicação";
+      const secao = els.secaoConteudo.value;
+      const conteudo = els.conteudoEditor.innerHTML.trim() || "<p>Conteúdo da publicação...</p>";
+      const imagem = state.objectUrlAtual || els.imagemInput.value.trim();
 
-      if (!titulo || !conteudoHtml || conteudoHtml === "<br>") {
-        showToast("Preencha o título e o conteúdo antes de visualizar.", "error");
-        return;
-      }
-
-      document.getElementById("previewSecao").textContent = nomeSecao(secao);
-      document.getElementById("previewSecaoMobile").textContent = nomeSecao(secao);
-      document.getElementById("previewTitulo").textContent = titulo;
-      document.getElementById("previewMeta").innerHTML = `
-        <span>Autor: ${escapeHtml(state.nomeUsuario || "Usuário")}</span>
-        <span>Tipo: ${escapeHtml(state.tipoUsuario || "usuário")}</span>
-        <span>Data: ${escapeHtml(formatarData(new Date()))}</span>
+      els.previewSecao.textContent = nomeSecao(secao);
+      els.previewSecaoMobile.textContent = nomeSecao(secao);
+      els.previewTitulo.textContent = titulo;
+      els.previewMeta.innerHTML = `
+        <span>${escapeHtml(nomeSecao(secao))}</span>
+        <span>${escapeHtml(formatarData(new Date().toISOString()))}</span>
+        <span>${escapeHtml(state.usuario?.nome || "Jornal Escolar")}</span>
       `;
-      document.getElementById("previewConteudo").innerHTML = sanitizeBasicHtml(conteudoHtml);
+      els.previewConteudo.innerHTML = conteudo;
 
-      els.previewImagemAviso.classList.add("hidden");
       if (imagem) {
         els.previewImagem.src = imagem;
-        els.previewImagem.style.objectFit = modoImagem;
+        els.previewImagem.style.objectFit = els.modoImagemSelect.value || "contain";
         els.previewImagem.classList.remove("hidden");
       } else {
-        els.previewImagem.src = "";
         els.previewImagem.classList.add("hidden");
       }
 
@@ -2926,572 +2960,146 @@ body {
     }
 
     function fecharPreview() {
-      els.previewModal.classList.add("hidden");
+      els.previewModal?.classList.add("hidden");
     }
 
-    function limparFormulario() {
-      document.getElementById("titulo").value = "";
-      els.conteudoEditor.innerHTML = "";
-      els.imagemInput.value = "";
-      els.imagemArquivo.value = "";
-      document.getElementById("secaoConteudo").value = "noticias";
-      els.modoImagemSelect.value = "contain";
-      els.formatBlockSelect.value = "";
-      els.fontSizeSelect.value = "";
-      state.arquivoImagemAtual = null;
-      state.imagemStoragePathAtual = "";
-      state.editandoId = null;
-      limparObjectUrl();
-      atualizarPreviewMiniatura();
+    function executarComando(command, value = null) {
+      els.conteudoEditor?.focus();
+      document.execCommand(command, false, value);
       atualizarEstadoToolbar();
-      els.statusEdicao.classList.add("hidden");
-      els.btnCancelarEdicao.classList.add("hidden");
-      document.getElementById("btnPostar").textContent = "Publicar";
-      esconderAvisoImagem();
     }
 
-    function cancelarEdicao() {
-      limparFormulario();
-    }
-
-    async function cadastrar() {
-      try {
-        const nome = els.cadastroNome.value.trim();
-        const email = els.cadastroEmail.value.trim().toLowerCase();
-        const senha = els.cadastroSenha.value.trim();
-        const tipo = normalizarTipoUsuario(els.cadastroTipo.value || "usuario");
-
-        if (!nome || !email || !senha) {
-          showToast("Preencha nome, email e senha.", "error");
-          return;
-        }
-
-        if (senha.length < 6) {
-          showToast("A senha deve ter pelo menos 6 caracteres.", "error");
-          return;
-        }
-
-        const cred = await createUserWithEmailAndPassword(auth, email, senha);
-
-        await setDoc(doc(db, "usuarios", cred.user.uid), {
-          nome: nome,
-          email: email,
-          tipo: tipo,
-          criadoEm: serverTimestamp()
-        }, { merge: true });
-
-        state.nomeUsuario = nome;
-        state.emailUsuario = email;
-        state.tipoUsuario = tipo;
-
-        els.cadastroNome.value = "";
-        els.cadastroEmail.value = "";
-        els.cadastroSenha.value = "";
-
-        showToast("Cadastro feito com sucesso. Você já está logado.", "success");
-        setOpenLateral(false, false);
-        mostrarSecao("painelEnvio");
-      } catch (error) {
-        console.error("Erro no cadastro:", error);
-        showToast(traduzirErroFirebase(error), "error");
-      }
-    }
-
-    async function login() {
-      try {
-        const email = els.loginEmail.value.trim().toLowerCase();
-        const senha = els.loginSenha.value.trim();
-
-        if (!email || !senha) {
-          showToast("Preencha email e senha.", "error");
-          return;
-        }
-
-        await signInWithEmailAndPassword(auth, email, senha);
-
-        els.loginSenha.value = "";
-        showToast("Login realizado com sucesso.", "success");
-        setOpenLateral(false, false);
-        mostrarSecao("painelEnvio");
-      } catch (error) {
-        console.error("Erro no login:", error);
-        showToast(traduzirErroFirebase(error), "error");
-      }
-    }
-
-    async function sair() {
-      try {
-        await signOut(auth);
-        showToast("Você saiu da conta.", "info");
-      } catch (error) {
-        showToast("Não foi possível sair da conta.", "error");
-      }
-    }
-
-    function traduzirErroFirebase(error) {
-      const codigo = error?.code || "";
-      const mapa = {
-        "auth/email-already-in-use": "Este email já está em uso.",
-        "auth/invalid-email": "Digite um email válido.",
-        "auth/weak-password": "A senha está muito fraca.",
-        "auth/invalid-credential": "Email ou senha incorretos.",
-        "auth/user-not-found": "Usuário não encontrado.",
-        "auth/wrong-password": "Senha incorreta.",
-        "auth/missing-password": "Digite a senha.",
-        "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde.",
-        "auth/network-request-failed": "Erro de conexão. Verifique sua internet.",
-        "permission-denied": "Você não tem permissão para fazer isso."
-      };
-      return mapa[codigo] || error?.message || "Ocorreu um erro.";
-    }
-
-    async function postarConteudo() {
-      try {
-        const user = auth.currentUser;
-        if (!user) {
-          showToast("Faça login primeiro.", "error");
-          setOpenLateral(true, true);
-          return;
-        }
-
-        const secao = document.getElementById("secaoConteudo").value;
-        const titulo = document.getElementById("titulo").value.trim();
-        const conteudoHtml = document.getElementById("conteudoEditor").innerHTML.trim();
-        const modoImagem = els.modoImagemSelect.value || "contain";
-
-        if (!titulo || !conteudoHtml || conteudoHtml === "<br>") {
-          showToast("Preencha o título e o conteúdo.", "error");
-          return;
-        }
-
-        const conteudoSeguro = sanitizeBasicHtml(conteudoHtml);
-        if (!stripHtml(conteudoSeguro).trim()) {
-          showToast("O conteúdo ficou vazio após a limpeza do texto.", "error");
-          return;
-        }
-
-        const status = usuarioPodeModerar() ? "aprovado" : "pendente";
-        const imagemUpload = await enviarImagemParaStorage(user);
-
-        if (state.editandoId) {
-          await updateDoc(doc(db, "conteudos", state.editandoId), {
-            secao,
-            titulo,
-            conteudo: conteudoSeguro,
-            imagem: imagemUpload.url,
-            imagemStoragePath: imagemUpload.storagePath,
-            modoImagem,
-            status,
-            atualizadoEm: serverTimestamp()
-          });
-
-          showToast("Conteúdo atualizado com sucesso.", "success");
-        } else {
-          await addDoc(collection(db, "conteudos"), {
-            secao,
-            titulo,
-            conteudo: conteudoSeguro,
-            imagem: imagemUpload.url,
-            imagemStoragePath: imagemUpload.storagePath,
-            modoImagem,
-            autor: state.nomeUsuario || user.email,
-            autorEmail: user.email,
-            tipoAutor: state.tipoUsuario,
-            status,
-            data: serverTimestamp(),
-            atualizadoEm: serverTimestamp()
-          });
-
-          showToast(
-            usuarioPodeModerar()
-              ? "Conteúdo publicado com sucesso."
-              : "Conteúdo enviado para aprovação.",
-            "success"
-          );
-        }
-
-        limparFormulario();
-        fecharPreview();
-      } catch (error) {
-        showToast("Erro ao enviar conteúdo. Tente novamente.", "error");
-      }
-    }
-
-    function carregarConteudos() {
-      if (state.conteudosUnsubscribe) state.conteudosUnsubscribe();
-
-      const q = query(collection(db, "conteudos"), orderBy("data", "desc"));
-
-      state.conteudosUnsubscribe = onSnapshot(q, (snapshot) => {
-        state.todosAprovados = [];
-
-        snapshot.forEach((docSnap) => {
-          const item = docSnap.data();
-          if (item.status === "aprovado") {
-            state.todosAprovados.push({ ...item, id: docSnap.id });
-          }
-        });
-
-        debounceRender();
-      });
-    }
-
-    function carregarPendentes() {
-      if (state.pendentesUnsubscribe) state.pendentesUnsubscribe();
-
-      const q = query(collection(db, "conteudos"), where("status", "==", "pendente"));
-
-      state.pendentesUnsubscribe = onSnapshot(q, (snapshot) => {
-        const area = document.getElementById("lista-pendentes");
-        area.innerHTML = "";
-
-        snapshot.forEach((docSnap) => {
-          const item = docSnap.data();
-          const id = docSnap.id;
-
-          area.innerHTML += `
-            <article class="card-conteudo secao-${item.secao} slide-up" style="margin-bottom:18px;">
-              ${gerarBlocoImagem(item.imagem, "card-imagem", item.modoImagem, "Imagem do conteúdo")}
-              <div class="card-corpo">
-                <span class="badge-inline">${nomeSecao(item.secao)}</span>
-                <h3 class="card-titulo" style="font-size:24px;">${escapeHtml(item.titulo)}</h3>
-                ${gerarMeta(item)}
-                <div class="card-resumo">${escapeHtml(extrairResumo(item.conteudo, 170))}</div>
-                ${gerarConteudoPublicacao({ ...item, id })}
-                <div class="publicacao-assinatura">
-                  <span class="publicacao-escola">Aguardando aprovação • EEF Vereador Alfredo Scottini</span>
-                  <span class="publicacao-data">${escapeHtml(formatarData(item.data))}</span>
-                </div>
-                <div class="acoes">
-                  <button class="btn-success" onclick="window.aprovarConteudo('${id}')">Aprovar</button>
-                  <button class="btn-warning" onclick="window.editarConteudo('${id}', true)">Editar</button>
-                  <button class="btn-danger" onclick="window.excluirConteudo('${id}')">Excluir</button>
-                </div>
-              </div>
-            </article>
-          `;
-        });
-
-        if (!area.innerHTML) {
-          area.innerHTML = `<div class="empty">Não há conteúdos pendentes.</div>`;
-        }
-      });
-    }
-
-    window.aprovarConteudo = async function(id) {
-      try {
-        await updateDoc(doc(db, "conteudos", id), {
-          status: "aprovado",
-          atualizadoEm: serverTimestamp()
-        });
-        showToast("Conteúdo aprovado.", "success");
-      } catch {
-        showToast("Erro ao aprovar conteúdo.", "error");
-      }
-    };
-
-    window.excluirConteudo = async function(id) {
-      try {
-        const confirmar = confirm("Tem certeza que deseja apagar este conteúdo?");
-        if (!confirmar) return;
-        await deleteDoc(doc(db, "conteudos", id));
-        showToast("Conteúdo apagado.", "info");
-      } catch {
-        showToast("Erro ao excluir conteúdo.", "error");
-      }
-    };
-
-    window.editarConteudo = async function(id, vindoDosPendentes = false) {
-      try {
-        const snap = await getDoc(doc(db, "conteudos", id));
-        if (!snap.exists()) {
-          showToast("Conteúdo não encontrado.", "error");
-          return;
-        }
-
-        const item = snap.data();
-
-        if (!vindoDosPendentes && !usuarioPodeEditar({ ...item, id })) {
-          showToast("Você não tem permissão para editar este conteúdo.", "error");
-          return;
-        }
-
-        state.editandoId = id;
-        document.getElementById("secaoConteudo").value = item.secao || "noticias";
-        document.getElementById("titulo").value = item.titulo || "";
-        els.conteudoEditor.innerHTML = item.conteudo || "";
-        els.modoImagemSelect.value = item.modoImagem || "contain";
-        state.arquivoImagemAtual = null;
-        state.imagemStoragePathAtual = item.imagemStoragePath || "";
-        els.imagemArquivo.value = "";
-        els.imagemInput.value = item.imagem || "";
-
-        atualizarPreviewMiniatura();
-        els.statusEdicao.classList.remove("hidden");
-        els.btnCancelarEdicao.classList.remove("hidden");
-        document.getElementById("btnPostar").textContent = "Salvar";
-
-        document.getElementById("painelEnvio").classList.remove("hidden");
-        document.getElementById("painelPublicacao").classList.remove("hidden");
-        document.getElementById("painelPublicacao").scrollIntoView({ behavior: "smooth", block: "start" });
-
-        showToast("Conteúdo carregado para edição.", "info");
-      } catch {
-        showToast("Erro ao abrir o conteúdo para edição.", "error");
-      }
-    };
-
-    window.toggleExpandirConteudo = function(id) {
-      if (state.conteudosExpandidos.has(id)) {
-        state.conteudosExpandidos.delete(id);
-      } else {
-        state.conteudosExpandidos.add(id);
-      }
-      renderizarConteudos();
-    };
-
-    function mostrarSecao(secao) {
-      document.querySelectorAll(".page-section").forEach(section => {
-        section.classList.add("hidden");
-      });
-
-      const alvo = document.getElementById(`sec-${secao}`) || document.getElementById(secao);
-      if (alvo) {
-        alvo.classList.remove("hidden");
-      }
-
-      els.navButtons.forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.section === secao);
-      });
-
-      if (isMobile()) {
-        els.navLeft.classList.remove("open");
-      }
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    window.mostrarSecao = mostrarSecao;
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        state.emailUsuario = user.email || "";
-
+    function atualizarEstadoToolbar() {
+      els.toolbarButtons?.forEach(btn => {
+        const cmd = btn.dataset.command;
         try {
-          const userRef = doc(db, "usuarios", user.uid);
-          const userSnap = await getDoc(userRef);
-
-          if (userSnap.exists()) {
-            const dados = userSnap.data();
-            state.nomeUsuario = dados.nome || user.displayName || user.email || "Usuário";
-            state.tipoUsuario = normalizarTipoUsuario(dados.tipo || "usuario");
-          } else {
-            state.nomeUsuario = user.displayName || user.email || "Usuário";
-            state.tipoUsuario = "usuario";
-
-            await setDoc(userRef, {
-              nome: state.nomeUsuario,
-              email: state.emailUsuario,
-              tipo: state.tipoUsuario,
-              criadoEm: serverTimestamp()
-            }, { merge: true });
-          }
-        } catch (error) {
-          console.warn("Não foi possível carregar o perfil do usuário:", error);
-          state.nomeUsuario = user.displayName || user.email || "Usuário";
-          state.tipoUsuario = "usuario";
+          btn.classList.toggle("active", document.queryCommandState(cmd));
+        } catch {
+          btn.classList.remove("active");
         }
+      });
+    }
 
-        els.usuarioNome.textContent = state.nomeUsuario;
-        els.usuarioTipo.textContent = state.tipoUsuario || "usuário";
-        els.usuarioNomeDrawer.textContent = state.nomeUsuario;
-        els.usuarioTipoDrawer.textContent = state.tipoUsuario || "usuário";
+    function configurarEditor() {
+      els.toolbarButtons?.forEach(btn => {
+        btn.addEventListener("click", () => executarComando(btn.dataset.command));
+      });
 
-        atualizarAreaUsuarioLogado(true);
-        atualizarPaineisLogados();
-      } else {
-        state.nomeUsuario = "";
-        state.emailUsuario = "";
-        state.tipoUsuario = "";
+      els.formatBlockSelect?.addEventListener("change", () => {
+        const valor = els.formatBlockSelect.value;
+        if (valor) executarComando("formatBlock", valor);
+        els.formatBlockSelect.value = "";
+      });
 
-        els.usuarioNome.textContent = "";
-        els.usuarioTipo.textContent = "";
-        els.usuarioNomeDrawer.textContent = "Usuário";
-        els.usuarioTipoDrawer.textContent = "Perfil";
+      els.fontSizeSelect?.addEventListener("change", () => {
+        const valor = els.fontSizeSelect.value;
+        if (valor) executarComando("fontSize", valor);
+        els.fontSizeSelect.value = "";
+      });
 
-        atualizarAreaUsuarioLogado(false);
+      els.textColorPicker?.addEventListener("input", () => executarComando("foreColor", els.textColorPicker.value));
+      els.highlightColorPicker?.addEventListener("input", () => executarComando("hiliteColor", els.highlightColorPicker.value));
 
-        document.getElementById("painelEnvio").classList.add("hidden");
-        document.getElementById("painelPublicacao").classList.add("hidden");
-        document.getElementById("painelModeracao").classList.add("hidden");
-        document.getElementById("lista-pendentes").innerHTML = "";
+      els.btnCriarLink?.addEventListener("click", () => {
+        const url = prompt("Cole o link:");
+        if (url) executarComando("createLink", url);
+      });
 
-        if (state.pendentesUnsubscribe) {
-          state.pendentesUnsubscribe();
-          state.pendentesUnsubscribe = null;
+      els.conteudoEditor?.addEventListener("keyup", atualizarEstadoToolbar);
+      els.conteudoEditor?.addEventListener("mouseup", atualizarEstadoToolbar);
+    }
+
+    function configurarEventos() {
+      els.btnLogin?.addEventListener("click", login);
+      els.btnCadastrar?.addEventListener("click", cadastrar);
+      els.btnSair?.addEventListener("click", sair);
+
+      els.btnAbrirCadastro?.addEventListener("click", () => {
+        els.drawerLoginCard.classList.add("hidden");
+        els.drawerCadastroCard.classList.remove("hidden");
+      });
+
+      els.btnVoltarLogin?.addEventListener("click", () => {
+        els.drawerCadastroCard.classList.add("hidden");
+        els.drawerLoginCard.classList.remove("hidden");
+      });
+
+      els.btnMenuMobile?.addEventListener("click", () => {
+        els.navLeft?.classList.toggle("open");
+      });
+
+      els.btnAbrirLateralTopo?.addEventListener("click", () => alternarLateral(false));
+      els.btnAbrirLateralNav?.addEventListener("click", () => alternarLateral(false));
+      els.abaGatilho?.addEventListener("click", () => {
+        state.lateralPinada = !state.lateralPinada;
+        alternarLateral(true);
+      });
+      els.drawerOverlay?.addEventListener("click", () => {
+        state.lateralPinada = false;
+        els.abaLateral?.classList.remove("pinada");
+        fecharLateral();
+      });
+
+      document.querySelectorAll(".aba-item[data-go]").forEach(item => {
+        item.addEventListener("click", () => {
+          mostrarSecao(item.dataset.go);
+          state.lateralPinada = false;
+          els.abaLateral?.classList.remove("pinada");
+          fecharLateral();
+        });
+      });
+
+      els.navButtons?.forEach(btn => {
+        btn.addEventListener("click", () => mostrarSecao(btn.dataset.section));
+      });
+
+      els.buscaConteudo?.addEventListener("input", renderizarTudo);
+
+      els.imagemArquivo?.addEventListener("change", () => {
+        state.arquivoImagemAtual = els.imagemArquivo.files?.[0] || null;
+        atualizarPreviewMiniatura();
+      });
+
+      els.imagemInput?.addEventListener("input", () => {
+        if (els.imagemInput.value.trim()) {
+          state.arquivoImagemAtual = null;
+          if (els.imagemArquivo) els.imagemArquivo.value = "";
         }
+        atualizarPreviewMiniatura();
+      });
 
-        cancelarEdicao();
-      }
-
-      carregarConteudos();
-    });
-
-    els.navButtons.forEach(btn => {
-      btn.addEventListener("click", () => mostrarSecao(btn.dataset.section));
-    });
-
-    els.btnMenuMobile.addEventListener("click", () => {
-      els.navLeft.classList.toggle("open");
-    });
-
-    els.buscaConteudo.addEventListener("input", debounceRender);
-    document.getElementById("btnAbrirCadastro").addEventListener("click", abrirCadastro);
-    document.getElementById("btnVoltarLogin").addEventListener("click", voltarLogin);
-    document.getElementById("btnCadastrar").addEventListener("click", cadastrar);
-    document.getElementById("btnLogin").addEventListener("click", login);
-    document.getElementById("btnSair").addEventListener("click", sair);
-    document.getElementById("btnPostar").addEventListener("click", postarConteudo);
-    els.btnCancelarEdicao.addEventListener("click", cancelarEdicao);
-    els.btnPreview.addEventListener("click", abrirPreview);
-    document.getElementById("btnFecharPreview").addEventListener("click", fecharPreview);
-
-    els.toolbarButtons.forEach(btn => {
-      btn.addEventListener("click", () => executarComando(btn.dataset.command));
-    });
-
-    els.formatBlockSelect.addEventListener("change", () => {
-      if (!els.formatBlockSelect.value) return;
-      focarEditor();
-      document.execCommand("formatBlock", false, els.formatBlockSelect.value);
-      atualizarEstadoToolbar();
-    });
-
-    els.fontSizeSelect.addEventListener("change", () => {
-      if (!els.fontSizeSelect.value) return;
-      focarEditor();
-      document.execCommand("fontSize", false, els.fontSizeSelect.value);
-      atualizarEstadoToolbar();
-    });
-
-    els.textColorPicker.addEventListener("input", () => {
-      focarEditor();
-      document.execCommand("foreColor", false, els.textColorPicker.value);
-      atualizarEstadoToolbar();
-    });
-
-    els.highlightColorPicker.addEventListener("input", () => {
-      focarEditor();
-      document.execCommand("hiliteColor", false, els.highlightColorPicker.value);
-      atualizarEstadoToolbar();
-    });
-
-    els.btnCriarLink.addEventListener("click", () => {
-      focarEditor();
-      const url = prompt("Digite o link completo:");
-      if (!url) return;
-      const valor = url.trim();
-      const seguro = valor.startsWith("http://") || valor.startsWith("https://") || valor.startsWith("mailto:");
-      if (!seguro) {
-        showToast("Use um link começando com http://, https:// ou mailto:.", "error");
-        return;
-      }
-      document.execCommand("createLink", false, valor);
-      atualizarEstadoToolbar();
-    });
-
-    els.conteudoEditor.addEventListener("keyup", atualizarEstadoToolbar);
-    els.conteudoEditor.addEventListener("mouseup", atualizarEstadoToolbar);
-    els.conteudoEditor.addEventListener("input", atualizarEstadoToolbar);
-
-    document.addEventListener("selectionchange", () => {
-      const selection = window.getSelection();
-      if (
-        document.activeElement === els.conteudoEditor ||
-        (selection && selection.anchorNode && els.conteudoEditor.contains(selection.anchorNode))
-      ) {
-        atualizarEstadoToolbar();
-      }
-    });
-
-    els.conteudoEditor.addEventListener("keydown", (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "b") {
-        event.preventDefault();
-        executarComando("bold");
-      }
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "i") {
-        event.preventDefault();
-        executarComando("italic");
-      }
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "u") {
-        event.preventDefault();
-        executarComando("underline");
-      }
-    });
-
-    els.imagemArquivo.addEventListener("change", (event) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      if (!file.type.startsWith("image/")) {
-        showToast("Selecione uma imagem válida.", "error");
-        els.imagemArquivo.value = "";
-        return;
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        showToast("A imagem deve ter no máximo 5 MB.", "error");
-        els.imagemArquivo.value = "";
-        return;
-      }
-
-      state.arquivoImagemAtual = file;
-      els.imagemInput.value = "";
-      atualizarPreviewMiniatura();
-    });
-
-    els.imagemInput.addEventListener("input", () => {
-      if (els.imagemInput.value.trim()) {
+      els.btnRemoverImagem?.addEventListener("click", () => {
         state.arquivoImagemAtual = null;
-        els.imagemArquivo.value = "";
-      }
+        if (els.imagemArquivo) els.imagemArquivo.value = "";
+        if (els.imagemInput) els.imagemInput.value = "";
+        atualizarPreviewMiniatura();
+      });
+
+      els.btnPreview?.addEventListener("click", abrirPreview);
+      els.btnFecharPreview?.addEventListener("click", fecharPreview);
+      els.previewModal?.addEventListener("click", (e) => {
+        if (e.target === els.previewModal) fecharPreview();
+      });
+
+      els.btnPostar?.addEventListener("click", publicarConteudo);
+      els.btnCancelarEdicao?.addEventListener("click", () => {
+        limparFormulario();
+        showToast("Edição cancelada.", "info");
+      });
+    }
+
+    function iniciar() {
+      garantirProfessorPadrao();
+      configurarEventos();
+      configurarEditor();
+      carregarConteudosLocal();
+      restaurarSessao();
       atualizarPreviewMiniatura();
-    });
+      mostrarSecao("inicio");
+    }
 
-    els.btnRemoverImagem.addEventListener("click", () => {
-      state.arquivoImagemAtual = null;
-      els.imagemInput.value = "";
-      els.imagemArquivo.value = "";
-      atualizarPreviewMiniatura();
-    });
-
-    els.modoImagemSelect.addEventListener("change", atualizarPreviewMiniatura);
-
-    els.previewThumb.addEventListener("error", () => {
-      mostrarAvisoImagem("Não foi possível carregar a imagem dessa prévia.");
-      els.previewThumbWrap.classList.remove("hidden");
-    });
-
-    els.previewThumb.addEventListener("load", esconderAvisoImagem);
-
-    els.previewImagem.addEventListener("error", () => {
-      els.previewImagem.classList.add("hidden");
-      els.previewImagemAviso.textContent = "A imagem da prévia não pôde ser carregada.";
-      els.previewImagemAviso.classList.remove("hidden");
-    });
-
-    els.previewImagem.addEventListener("load", () => {
-      els.previewImagemAviso.classList.add("hidden");
-    });
-
-    els.previewModal.addEventListener("click", (event) => {
-      if (event.target === els.previewModal) fecharPreview();
-    });
-
-    iniciarAbaLateral();
-    mostrarSecao("inicio");
-    atualizarEstadoToolbar();
-    atualizarPreviewMiniatura();
+    iniciar();
   </script>
+
 </body>
 </html>
