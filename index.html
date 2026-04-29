@@ -602,6 +602,22 @@
       background: linear-gradient(180deg, #9333ea, #d8b4fe);
     }
 
+    .card-conteudo.secao-sexto::before {
+      background: linear-gradient(180deg, #0ea5e9, #7dd3fc);
+    }
+
+    .card-conteudo.secao-setimo::before {
+      background: linear-gradient(180deg, #16a34a, #86efac);
+    }
+
+    .card-conteudo.secao-oitavo::before {
+      background: linear-gradient(180deg, #f97316, #fed7aa);
+    }
+
+    .card-conteudo.secao-nono::before {
+      background: linear-gradient(180deg, #7c3aed, #ddd6fe);
+    }
+
     .card-imagem {
       width: 100%;
       height: 300px;
@@ -1734,6 +1750,10 @@ body {
         <div class="aba-item" data-go="eventos">Eventos</div>
         <div class="aba-item" data-go="projetos">Projetos</div>
         <div class="aba-item" data-go="comunidade">Comunidade Escolar</div>
+        <div class="aba-item" data-go="sexto">6º Ano</div>
+        <div class="aba-item" data-go="setimo">7º Ano</div>
+        <div class="aba-item" data-go="oitavo">8º Ano</div>
+        <div class="aba-item" data-go="nono">9º Ano</div>
         <div id="atalhoAreaLogada" class="aba-item hidden" data-go="painelEnvio">Área logada</div>
       </div>
 
@@ -1822,6 +1842,10 @@ body {
         <button class="nav-btn" data-section="eventos">Eventos</button>
         <button class="nav-btn" data-section="projetos">Projetos</button>
         <button class="nav-btn" data-section="comunidade">Comunidade Escolar</button>
+        <button class="nav-btn" data-section="sexto">6º Ano</button>
+        <button class="nav-btn" data-section="setimo">7º Ano</button>
+        <button class="nav-btn" data-section="oitavo">8º Ano</button>
+        <button class="nav-btn" data-section="nono">9º Ano</button>
         <button id="btnAreaLogada" class="nav-btn hidden" data-section="painelEnvio">Área logada</button>
       </div>
 
@@ -1866,6 +1890,10 @@ body {
               <button class="btn-light" onclick="mostrarSecao('eventos')">Ver eventos</button>
               <button class="btn-light" onclick="mostrarSecao('projetos')">Ver projetos</button>
               <button class="btn-light" onclick="mostrarSecao('comunidade')">Ver comunidade</button>
+              <button class="btn-light" onclick="mostrarSecao('sexto')">6º Ano</button>
+              <button class="btn-light" onclick="mostrarSecao('setimo')">7º Ano</button>
+              <button class="btn-light" onclick="mostrarSecao('oitavo')">8º Ano</button>
+              <button class="btn-light" onclick="mostrarSecao('nono')">9º Ano</button>
             </div>
           </div>
         </div>
@@ -1895,6 +1923,30 @@ body {
               <h3>Comunidade</h3>
               <p>Veja conteúdos ligados aos alunos, famílias e professores.</p>
               <button class="btn-secondary" onclick="mostrarSecao('comunidade')">Abrir</button>
+            </div>
+
+            <div class="home-mini-card azul">
+              <h3>6º Ano</h3>
+              <p>Publicações e atividades da turma do 6º ano.</p>
+              <button class="btn-primary" onclick="mostrarSecao('sexto')">Abrir</button>
+            </div>
+
+            <div class="home-mini-card verde">
+              <h3>7º Ano</h3>
+              <p>Publicações e atividades da turma do 7º ano.</p>
+              <button class="btn-success" onclick="mostrarSecao('setimo')">Abrir</button>
+            </div>
+
+            <div class="home-mini-card roxo">
+              <h3>8º Ano</h3>
+              <p>Publicações e atividades da turma do 8º ano.</p>
+              <button class="btn-secondary" onclick="mostrarSecao('oitavo')">Abrir</button>
+            </div>
+
+            <div class="home-mini-card azul">
+              <h3>9º Ano</h3>
+              <p>Publicações e atividades da turma do 9º ano.</p>
+              <button class="btn-primary" onclick="mostrarSecao('nono')">Abrir</button>
             </div>
           </div>
         </div>
@@ -1932,6 +1984,38 @@ body {
         <div id="lista-comunidade" class="cards"></div>
       </section>
 
+      <section id="sec-sexto" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">6º Ano</h2>
+          <p class="section-subtitle">Conteúdos, atividades e publicações do 6º ano.</p>
+        </div>
+        <div id="lista-sexto" class="cards"></div>
+      </section>
+
+      <section id="sec-setimo" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">7º Ano</h2>
+          <p class="section-subtitle">Conteúdos, atividades e publicações do 7º ano.</p>
+        </div>
+        <div id="lista-setimo" class="cards"></div>
+      </section>
+
+      <section id="sec-oitavo" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">8º Ano</h2>
+          <p class="section-subtitle">Conteúdos, atividades e publicações do 8º ano.</p>
+        </div>
+        <div id="lista-oitavo" class="cards"></div>
+      </section>
+
+      <section id="sec-nono" class="page-section hidden section">
+        <div class="section-header">
+          <h2 class="section-title">9º Ano</h2>
+          <p class="section-subtitle">Conteúdos, atividades e publicações do 9º ano.</p>
+        </div>
+        <div id="lista-nono" class="cards"></div>
+      </section>
+
       <section id="painelEnvio" class="page-section hidden section">
         <div id="painelPublicacao" class="panel hidden">
           <h2 class="section-title">Publicar conteúdo</h2>
@@ -1944,6 +2028,10 @@ body {
             <option value="eventos">Eventos</option>
             <option value="projetos">Projetos</option>
             <option value="comunidade">Comunidade Escolar</option>
+            <option value="sexto">6º Ano</option>
+            <option value="setimo">7º Ano</option>
+            <option value="oitavo">8º Ano</option>
+            <option value="nono">9º Ano</option>
           </select>
 
           <input id="titulo" placeholder="Título" />
@@ -2090,6 +2178,10 @@ body {
           <li>Eventos</li>
           <li>Projetos</li>
           <li>Comunidade Escolar</li>
+          <li>6º Ano</li>
+          <li>7º Ano</li>
+          <li>8º Ano</li>
+          <li>9º Ano</li>
         </ul>
       </div>
       <div class="footer-card">
@@ -2255,7 +2347,11 @@ body {
         noticias: "Notícias",
         eventos: "Eventos",
         projetos: "Projetos",
-        comunidade: "Comunidade Escolar"
+        comunidade: "Comunidade Escolar",
+        sexto: "6º Ano",
+        setimo: "7º Ano",
+        oitavo: "8º Ano",
+        nono: "9º Ano"
       };
       return nomes[secao] || "Publicação";
     }
@@ -2519,7 +2615,7 @@ body {
         return base.includes(termo);
       });
 
-      ["noticias", "eventos", "projetos", "comunidade"].forEach(secao => {
+      ["noticias", "eventos", "projetos", "comunidade", "sexto", "setimo", "oitavo", "nono"].forEach(secao => {
         const area = document.getElementById(`lista-${secao}`);
         if (!area) return;
         const itens = filtrados.filter(item => item.secao === secao);
